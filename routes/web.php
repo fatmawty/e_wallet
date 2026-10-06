@@ -14,6 +14,7 @@ use App\Http\Controllers\EWalletController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RespondentController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\ImportKuesionerController;
 
 // Authentication
 Route::middleware('guest')->group(function () {
@@ -63,4 +64,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 	// Tentang Sistem SPK
 	Route::get('/tentang', [AboutController::class, 'index'])->name('about');
+
+	// Import Kuesioner CSV → Hitung Bobot Otomatis
+	Route::get('/import-kuesioner', [ImportKuesionerController::class, 'index'])->name('import.index');
+	Route::post('/import-kuesioner', [ImportKuesionerController::class, 'store'])->name('import.store');
 });

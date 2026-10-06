@@ -10,7 +10,7 @@ Aplikasi ini membantu pengguna menentukan alternatif e-wallet terbaik berdasarka
 Alternatif E-Wallet yang dievaluasi:
 1. **DANA** (A1)
 2. **OVO** (A2)
-3. **SeaBank** (A3)
+3. **ShopeePay** (A3)
 4. **GoPay** (A4)
 
 ---
@@ -109,7 +109,7 @@ Metode SAW (penjumlahan terbobot) dilakukan dengan langkah-langhat matematis ber
 2. **Kelola Kriteria (`/kriteria`)**:
    - Mengubah bobot, menambah/menghapus kriteria, dan validasi indikator total bobot (harus 100%).
 3. **Kelola Alternatif (`/alternatif`)**:
-   - Mengelola data e-wallet (DANA, OVO, SeaBank, GoPay) beserta warna brand & deskripsi.
+   - Mengelola data e-wallet (DANA, OVO, ShopeePay, GoPay) beserta warna brand & deskripsi.
 4. **Penilaian Alternatif (`/penilaian`)**:
    - Menginputkan nilai matriks kriteria (1 = Tidak Baik s.d. 5 = Sangat Baik) menggunakan dropdown sederhana. Terdapat tombol simpan & reset ke benchmark default.
 5. **Proses SAW (`/proses-saw`)**:

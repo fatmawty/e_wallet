@@ -130,6 +130,11 @@
                 <i class="fa-solid fa-users w-5 text-center text-sky-400"></i>
                 <span>Data Responden</span>
             </a>
+
+            <a href="{{ route('import.index') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('import.*') ? 'sidebar-active font-semibold' : 'text-slate-400 hover:bg-slate-800/80 hover:text-white' }}">
+                <i class="fa-solid fa-file-csv w-5 text-center text-teal-400"></i>
+                <span>Import Kuesioner</span>
+            </a>
             @endif
 
             <div class="px-3 pt-4 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">Hitung & Rekomendasi</div>
