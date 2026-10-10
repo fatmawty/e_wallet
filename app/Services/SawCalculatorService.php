@@ -3,10 +3,13 @@
 namespace App\Services;
 
 use App\Models\Alternative;
-use App\Models\AlternativeScore;
 use App\Models\CalculationResult;
 use App\Models\Criterion;
+use App\Models\CriterionImportanceRating;
+use App\Models\EWallet;
+use App\Models\Rating;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class SawCalculatorService
 {
@@ -21,28 +24,146 @@ class SawCalculatorService
         $alternatives = Alternative::where('status', 'active')->orderBy('code')->get();
 
         if ($criteria->isEmpty() || $alternatives->isEmpty()) {
+            CalculationResult::query()->delete();
+
             return [
                 'has_data' => false,
                 'message'  => 'Data kriteria atau alternatif masih kosong.',
             ];
         }
 
-        $totalWeight   = round($criteria->sum('weight'), 4);
-        $isWeightValid = abs($totalWeight - 1.0) < 0.001;
-
-        // 1. Build Decision Matrix X from AlternativeScore (scale 1 - 5)
-        $scoresMap = AlternativeScore::all()->keyBy(fn($s) => $s->alternative_id . '_' . $s->criteria_id);
-        $matrixX   = [];
-
-        foreach ($alternatives as $alt) {
-            foreach ($criteria as $crit) {
-                $key = $alt->id . '_' . $crit->id;
-                $scoreObj = $scoresMap->get($key);
-                $matrixX[$alt->id][$crit->id] = $scoreObj ? (float)$scoreObj->score : 3.0;
+        // Match each alternative with the corresponding questionnaire wallet.
+        $walletsByName = EWallet::all()->keyBy(fn (EWallet $wallet) => Str::lower(trim($wallet->name)));
+        $alternativesByWallet = [];
+        foreach ($alternatives as $alternative) {
+            $wallet = $walletsByName->get(Str::lower(trim($alternative->name)));
+            if ($wallet) {
+                $alternativesByWallet[$wallet->id] = $alternative->id;
             }
         }
 
-        // 2. Find Extreme Values (MAX for Benefit, MIN for Cost) per Criterion
+        if (count($alternativesByWallet) !== $alternatives->count()) {
+            CalculationResult::query()->delete();
+
+            return [
+                'has_data' => false,
+                'message' => 'Ranking belum dapat dihitung karena setiap alternatif harus memiliki e-wallet yang sesuai di kuesioner.',
+            ];
+        }
+
+        // Only respondents who completed both parts of the questionnaire participate.
+        $expectedRatingCount = count($alternativesByWallet) * $criteria->count();
+        $completeRatingRespondentIds = Rating::query()
+            ->select('respondent_id')
+            ->whereIn('e_wallet_id', array_keys($alternativesByWallet))
+            ->whereIn('criterion_id', $criteria->modelKeys())
+            ->groupBy('respondent_id')
+            ->havingRaw('COUNT(*) = ?', [$expectedRatingCount])
+            ->pluck('respondent_id')
+            ->all();
+
+        $completeImportanceRespondentIds = CriterionImportanceRating::query()
+            ->select('respondent_id')
+            ->whereIn('criterion_id', $criteria->modelKeys())
+            ->groupBy('respondent_id')
+            ->havingRaw('COUNT(*) = ?', [$criteria->count()])
+            ->pluck('respondent_id')
+            ->all();
+
+        $respondentIds = array_values(array_intersect(
+            $completeRatingRespondentIds,
+            $completeImportanceRespondentIds
+        ));
+
+        if ($respondentIds === []) {
+            CalculationResult::query()->delete();
+
+            return [
+                'has_data' => false,
+                'message' => 'Ranking belum dapat dihitung karena belum ada responden dengan penilaian e-wallet dan tingkat kepentingan semua kriteria yang lengkap.',
+            ];
+        }
+
+        // 1. Derive normalized criterion weights from average importance responses.
+        $averageImportance = CriterionImportanceRating::query()
+            ->select('criterion_id')
+            ->selectRaw('AVG(score) as average_score')
+            ->whereIn('respondent_id', $respondentIds)
+            ->whereIn('criterion_id', $criteria->modelKeys())
+            ->groupBy('criterion_id')
+            ->get()
+            ->keyBy('criterion_id');
+
+        $totalImportance = $criteria->sum(
+            fn (Criterion $criterion) => (float) $averageImportance[$criterion->id]->average_score
+        );
+
+        if ($totalImportance <= 0) {
+            CalculationResult::query()->delete();
+
+            return [
+                'has_data' => false,
+                'message' => 'Ranking belum dapat dihitung karena total tingkat kepentingan kriteria harus lebih dari nol.',
+            ];
+        }
+
+        $lastCriterionId = $criteria->last()->id;
+        $assignedWeight = 0.0;
+        foreach ($criteria as $criterion) {
+            $weight = round((float) $averageImportance[$criterion->id]->average_score / $totalImportance, 10);
+            if ($criterion->id === $lastCriterionId) {
+                $weight = round(1 - $assignedWeight, 10);
+            }
+
+            $criterion->weight = $weight;
+            $assignedWeight += $weight;
+        }
+
+        $totalWeight = round($criteria->sum('weight'), 10);
+        $isWeightValid = abs($totalWeight - 1.0) < 0.001;
+
+        // 2. Build Decision Matrix X from complete respondent rating averages.
+        $averageScores = Rating::query()
+            ->select('e_wallet_id', 'criterion_id')
+            ->selectRaw('AVG(score) as average_score')
+            ->whereIn('respondent_id', $respondentIds)
+            ->whereIn('e_wallet_id', array_keys($alternativesByWallet))
+            ->whereIn('criterion_id', $criteria->modelKeys())
+            ->groupBy('e_wallet_id', 'criterion_id')
+            ->get();
+
+        $averageScoresByPair = $averageScores->keyBy(
+            fn ($score) => $score->e_wallet_id . ':' . $score->criterion_id
+        );
+        $matrixX   = [];
+        $missingScores = [];
+        foreach ($alternatives as $alt) {
+            foreach ($criteria as $crit) {
+                $walletId = array_search($alt->id, $alternativesByWallet, true);
+                $average = $walletId === false
+                    ? null
+                    : $averageScoresByPair->get($walletId . ':' . $crit->id);
+
+                if (!$average) {
+                    $missingScores[] = "{$alt->name} / {$crit->name}";
+                    continue;
+                }
+
+                $matrixX[$alt->id][$crit->id] = (float) $average->average_score;
+            }
+        }
+
+        if ($missingScores !== []) {
+            CalculationResult::query()->delete();
+
+            return [
+                'has_data' => false,
+                'message' => 'Ranking belum dapat dihitung karena belum ada penilaian responden untuk: '
+                    . implode(', ', $missingScores) . '.',
+            ];
+        }
+
+        // 3. Find Extreme Values (MAX for Benefit, MIN for Cost) per Criterion
         $extremeValues = [];
         foreach ($criteria as $crit) {
             $colValues = [];
@@ -57,7 +178,7 @@ class SawCalculatorService
             ];
         }
 
-        // 3. Normalize Decision Matrix (Matrix R)
+        // 4. Normalize Decision Matrix (Matrix R)
         $matrixR = [];
         foreach ($alternatives as $alt) {
             foreach ($criteria as $crit) {
@@ -76,7 +197,7 @@ class SawCalculatorService
             }
         }
 
-        // 4. Calculate Weighted Values (W * R) & Final Preference Scores (V_i)
+        // 5. Calculate Weighted Values (W * R) & Final Preference Scores (V_i)
         $weightedMatrix = [];
         $finalScores    = [];
 
@@ -93,7 +214,7 @@ class SawCalculatorService
             $finalScores[$alt->id] = round($sumV, 4);
         }
 
-        // 5. Rank Alternatives (Descending Order)
+        // 6. Rank Alternatives (Descending Order)
         arsort($finalScores);
 
         $ranking = [];
@@ -102,8 +223,16 @@ class SawCalculatorService
             $ranking[$altId] = $rankPos++;
         }
 
-        // 6. Save/Update Calculation Results in Database
-        DB::transaction(function () use ($alternatives, $matrixX, $matrixR, $weightedMatrix, $finalScores, $ranking) {
+        // 7. Save/Update Calculation Results in Database
+        DB::transaction(function () use ($criteria, $alternatives, $matrixX, $matrixR, $weightedMatrix, $finalScores, $ranking) {
+            foreach ($criteria as $criterion) {
+                if ((float) $criterion->getOriginal('weight') !== (float) $criterion->weight) {
+                    $criterion->save();
+                }
+            }
+
+            CalculationResult::whereNotIn('alternative_id', $alternatives->modelKeys())->delete();
+
             foreach ($alternatives as $alt) {
                 CalculationResult::updateOrCreate(
                     ['alternative_id' => $alt->id],
@@ -120,7 +249,7 @@ class SawCalculatorService
             }
         });
 
-        // 7. Best Alternative Winner
+        // Identify the highest-ranked alternative.
         $bestAlternative = null;
         $bestScore       = -1;
 
@@ -139,6 +268,8 @@ class SawCalculatorService
             'criteria'         => $criteria,
             'alternatives'     => $alternatives,
             'matrix_x'         => $matrixX,
+            'respondent_count' => count($respondentIds),
+            'weight_respondent_count' => count($respondentIds),
             'extreme_values'   => $extremeValues,
             'matrix_r'         => $matrixR,
             'weighted_matrix'  => $weightedMatrix,

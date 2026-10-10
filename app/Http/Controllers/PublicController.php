@@ -3,13 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Services\SawCalculatorService;
+use App\Models\Criterion;
+use App\Models\EWallet;
+use App\Models\Respondent;
 use Illuminate\View\View;
 
 class PublicController extends Controller
 {
     public function home(SawCalculatorService $sawService): View
     {
-        return view('public.home', $this->resultData($sawService));
+        return view('public.home', $this->resultData($sawService) + [
+            'criteria' => Criterion::orderBy('code')->get(),
+            'wallets' => EWallet::whereIn('name', ['GoPay', 'ShopeePay', 'OVO', 'DANA'])
+                ->orderByRaw("CASE name
+                    WHEN 'GoPay' THEN 1
+                    WHEN 'ShopeePay' THEN 2
+                    WHEN 'OVO' THEN 3
+                    WHEN 'DANA' THEN 4
+                    ELSE 5
+                END")
+                ->get(),
+            'respondentCount' => Respondent::count(),
+            'respondentTarget' => 30,
+        ]);
     }
 
     public function result(SawCalculatorService $sawService): View

@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\EWallet;
 use App\Models\Criterion;
 use App\Models\Respondent;
-use App\Models\Rating;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class EWalletController extends Controller
 {
@@ -90,19 +87,14 @@ class EWalletController extends Controller
     public function index()
     {
         $hasilSaw = $this->calculateSaw();
-        $wallets = EWallet::withCount('primaryRespondents')->get();
+        $wallets = EWallet::all();
         $criteria = Criterion::all();
         $totalRespondents = Respondent::count();
 
         // Process overall ranking and stats for each e-wallet
-        $rankingData = $wallets->map(function ($wallet) use ($totalRespondents, $criteria) {
+        $rankingData = $wallets->map(function ($wallet) use ($criteria) {
             $avgScore = round($wallet->ratings()->avg('score') ?? 0, 2);
             $totalRatings = $wallet->ratings()->count();
-
-            // Usage percentage among respondents
-            $usagePct = $totalRespondents > 0
-                ? round(($wallet->primary_respondents_count / $totalRespondents) * 100, 1)
-                : 0;
 
             // Score per criterion for radar chart
             $criterionScores = [];
@@ -126,8 +118,6 @@ class EWalletController extends Controller
                 'badge_text' => $wallet->badge_text,
                 'avg_score' => $avgScore,
                 'total_ratings' => $totalRatings,
-                'primary_count' => $wallet->primary_respondents_count,
-                'usage_pct' => $usagePct,
                 'criterion_scores' => $criterionScores,
             ];
         });
@@ -141,12 +131,8 @@ class EWalletController extends Controller
             return $item;
         });
 
-        // Most popular by usage
-        $mostPopularWallet = $rankedWallets->sortByDesc('primary_count')->first();
-
         // Recent student feedback
-        $recentRespondents = Respondent::with('primaryEWallet')
-            ->whereNotNull('general_feedback')
+        $recentRespondents = Respondent::whereNotNull('general_feedback')
             ->orderBy('created_at', 'desc')
             ->take(6)
             ->get();
@@ -156,7 +142,6 @@ class EWalletController extends Controller
             'criteria' => $criteria,
             'totalRespondents' => $totalRespondents,
             'topWallet' => $rankedWallets->first(),
-            'mostPopularWallet' => $mostPopularWallet,
             'recentRespondents' => $recentRespondents,
             'bobot' => $hasilSaw['bobot'],
             'matriksX' => $hasilSaw['matriksX'],
@@ -169,14 +154,7 @@ class EWalletController extends Controller
     {
         $wallet = EWallet::where('slug', $slug)->firstOrFail();
         $criteria = Criterion::all();
-        $totalRespondents = Respondent::count();
-
         $avgScore = round($wallet->ratings()->avg('score') ?? 0, 2);
-        $primaryCount = $wallet->primaryRespondents()->count();
-        $usagePct = $totalRespondents > 0
-            ? round(($primaryCount / $totalRespondents) * 100, 1)
-            : 0;
-
         // Ratings breakdown per criterion
         $criterionBreakdown = [];
         foreach ($criteria as $crit) {
@@ -220,21 +198,12 @@ class EWalletController extends Controller
             ];
         }
 
-        // Primary users feedback
-        $feedbacks = Respondent::where('primary_e_wallet_id', $wallet->id)
-            ->whereNotNull('general_feedback')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
         return view('ewallet.show', [
             'wallet' => $wallet,
             'avgScore' => $avgScore,
-            'primaryCount' => $primaryCount,
-            'usagePct' => $usagePct,
             'criterionBreakdown' => $criterionBreakdown,
             'starCounts' => $starCounts,
             'totalRatings' => $totalRatings,
-            'feedbacks' => $feedbacks,
         ]);
     }
 }

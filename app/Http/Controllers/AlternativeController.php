@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alternative;
-use App\Models\Criterion;
-use App\Models\AlternativeScore;
 use App\Services\SawCalculatorService;
 use Illuminate\Http\Request;
 
@@ -32,17 +30,7 @@ class AlternativeController extends Controller
             'name.required' => 'Nama alternatif E-Wallet wajib diisi.',
         ]);
 
-        $alternative = Alternative::create($validated);
-
-        // Attach default scores (3) for all criteria
-        $criteria = Criterion::all();
-        foreach ($criteria as $crit) {
-            AlternativeScore::create([
-                'alternative_id' => $alternative->id,
-                'criteria_id' => $crit->id,
-                'score' => 3,
-            ]);
-        }
+        Alternative::create($validated);
 
         // Recalculate SAW
         $sawService->calculate();

@@ -11,10 +11,10 @@
                 <i class="fa-solid fa-square-poll-vertical text-indigo-600"></i> Metodologi Kuesioner Skala Likert (1 - 5)
             </span>
             <h1 class="font-heading font-extrabold text-4xl sm:text-5xl lg:text-6xl text-slate-900 tracking-tight leading-tight mb-6">
-                Ranking <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-sky-500">E-Wallet Terbaik</span> Pilihan Mahasiswa
+                Ranking <span class="bg-clip-text text-transparent bg-gradient-to-r from-forest-600 to-forest-400">E-Wallet Terbaik</span> Pilihan Mahasiswa
             </h1>
             <p class="text-lg text-slate-600 leading-relaxed mb-8">
-                Temukan dompet digital (GoPay, ShopeePay, OVO, DANA) paling populer, aman, dan efisien berdasarkan penilaian langsung ribuan mahasiswa dari berbagai perguruan tinggi.
+                Bandingkan GoPay, ShopeePay, OVO, dan DANA berdasarkan penilaian responden pada kriteria keamanan, kemudahan, promo, biaya, dan fitur.
             </p>
             <div class="flex flex-wrap items-center justify-center gap-4">
                 <a href="{{ route('kuesioner.create') }}" id="btn-hero-survey" class="px-6 py-3.5 rounded-2xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5">
@@ -27,7 +27,7 @@
         </div>
 
         <!-- Key Metrics Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-6">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
             <div class="glass-card p-5 rounded-2xl shadow-sm">
                 <div class="flex items-center gap-3 text-slate-500 mb-2">
                     <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
@@ -51,21 +51,6 @@
                     {{ $topWallet['name'] ?? 'N/A' }}
                     <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-200">
                         {{ $topWallet['avg_score'] }} / 5.0
-                    </span>
-                </div>
-            </div>
-
-            <div class="glass-card p-5 rounded-2xl shadow-sm">
-                <div class="flex items-center gap-3 text-slate-500 mb-2">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm">
-                        <i class="fa-solid fa-fire"></i>
-                    </div>
-                    <span class="text-xs font-semibold uppercase tracking-wider">Paling Sering Digunakan</span>
-                </div>
-                <div class="text-2xl sm:text-3xl font-heading font-extrabold text-slate-900 flex items-center gap-2">
-                    {{ $mostPopularWallet['name'] ?? 'N/A' }}
-                    <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">
-                        {{ $mostPopularWallet['usage_pct'] }}%
                     </span>
                 </div>
             </div>
@@ -172,9 +157,6 @@
                                     @endif
                                 @endfor
                             </div>
-                            <span class="text-slate-500 font-medium text-[11px]">
-                                {{ $wallet['usage_pct'] }}% Pengguna Utama
-                            </span>
                         </div>
                     </div>
 
@@ -257,11 +239,11 @@
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">
-                                    {{ substr($resp->name, 0, 1) }}
+                                    <i class="fa-solid fa-user"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-semibold text-sm text-slate-900 leading-tight">{{ $resp->name }}</h4>
-                                    <p class="text-[11px] text-slate-500">{{ $resp->institution }} @if($resp->major) &bull; {{ $resp->major }} @endif</p>
+                                    <h4 class="font-semibold text-sm text-slate-900 leading-tight">Responden anonim</h4>
+                                    <p class="text-[11px] text-slate-500">Mahasiswa</p>
                                 </div>
                             </div>
                         </div>
@@ -269,14 +251,6 @@
                             "{{ $resp->general_feedback }}"
                         </p>
                     </div>
-                    @if($resp->primaryEWallet)
-                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                            <span class="text-slate-400">Pengguna Utama:</span>
-                            <span class="font-semibold px-2 py-0.5 rounded text-white text-[10px]" style="background-color: {{ $resp->primaryEWallet->color_hex }}">
-                                {{ $resp->primaryEWallet->name }}
-                            </span>
-                        </div>
-                    @endif
                 </div>
             @endforeach
         </div>

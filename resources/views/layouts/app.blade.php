@@ -14,6 +14,46 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        const forest = {
+            50: '#EAF2F0',
+            100: '#D2E3E0',
+            200: '#A6C7C1',
+            300: '#79AAA2',
+            400: '#4D8E83',
+            500: '#2D7068',
+            600: '#0F3D3A',
+            700: '#0B302E',
+            800: '#082523',
+            900: '#061C1B',
+            950: '#031211',
+        };
+        const goldenHour = {
+            50: '#FFF8E8',
+            100: '#FCECC9',
+            200: '#F8D998',
+            300: '#F5C667',
+            400: '#F4B13B',
+            500: '#E69B22',
+            600: '#C27A16',
+            700: '#985812',
+            800: '#70400F',
+            900: '#4A2A0B',
+            950: '#2B1807',
+        };
+        const terracotta = {
+            50: '#FCF0ED',
+            100: '#F8DDD6',
+            200: '#F1BBAE',
+            300: '#E99A87',
+            400: '#E0745E',
+            500: '#C95D48',
+            600: '#A94332',
+            700: '#813326',
+            800: '#5F281F',
+            900: '#3F1C17',
+            950: '#26110E',
+        };
+
         tailwind.config = {
             theme: {
                 extend: {
@@ -22,13 +62,42 @@
                         heading: ['Outfit', 'sans-serif'],
                     },
                     colors: {
+                        forest,
+                        gold: goldenHour,
+                        clay: terracotta,
+                        sand: {
+                            50: '#FBF7F1',
+                            100: '#F2E6D6',
+                            200: '#E7D2B8',
+                            300: '#D7B995',
+                            400: '#C6A078',
+                            500: '#A9815D',
+                            600: '#866448',
+                            700: '#654B38',
+                            800: '#48362B',
+                            900: '#30241D',
+                        },
+                        indigo: forest,
+                        blue: forest,
+                        sky: forest,
+                        cyan: forest,
+                        emerald: forest,
+                        green: forest,
+                        teal: forest,
+                        violet: forest,
+                        purple: forest,
+                        amber: goldenHour,
+                        yellow: goldenHour,
+                        orange: terracotta,
+                        rose: terracotta,
+                        red: terracotta,
                         brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            900: '#1e1b4b',
+                            50: '#EAF2F0',
+                            100: '#D2E3E0',
+                            500: '#2D7068',
+                            600: '#0F3D3A',
+                            700: '#0B302E',
+                            900: '#061C1B',
                         },
                         dana: '#118EEA',
                         ovo: '#4C2A86',
@@ -59,22 +128,22 @@
             border-radius: 4px;
         }
         .sidebar-active {
-            background-color: #059669;
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+            background-color: #F4B13B;
+            color: #0F3D3A;
+            box-shadow: 0 4px 14px rgba(244, 177, 59, 0.24);
         }
     </style>
 </head>
-<body class="h-full bg-gradient-to-br from-white to-slate-100 text-slate-800 font-sans antialiased flex flex-col md:flex-row min-h-screen">
+<body class="h-full bg-gradient-to-br from-sand-50 to-sand-100 text-slate-800 font-sans antialiased flex flex-col md:flex-row min-h-screen">
 
     <!-- Mobile Top Header Bar -->
-    <div class="md:hidden sticky top-0 z-40 bg-slate-900 text-white px-4 py-3 flex items-center justify-between shadow-md">
+    <div class="md:hidden sticky top-0 z-40 bg-[#0F3D3A] text-white px-4 py-3 flex items-center justify-between shadow-md">
         <a href="{{ auth()->check() && auth()->user()->role === 'admin' ? route('dashboard') : route('home') }}" class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center font-bold text-white shadow-sm">
                 <i class="fa-solid fa-wallet text-sm"></i>
             </div>
             <div>
-                <span class="font-heading font-bold text-base tracking-tight text-white">SPK <span class="text-emerald-400">E-Wallet</span></span>
+                <span class="font-heading font-bold text-base tracking-tight text-white">SPK <span class="text-gold-400">E-Wallet</span></span>
                 <span class="text-[10px] block text-slate-400 font-medium">Simple Additive Weighting</span>
             </div>
         </a>
@@ -84,20 +153,20 @@
     </div>
 
     <!-- Backdrop for Mobile Sidebar -->
-    <div id="sidebar-backdrop" class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm hidden md:hidden" onclick="toggleMobileSidebar()"></div>
+    <div id="sidebar-backdrop" class="fixed inset-0 z-40 bg-forest-950/60 backdrop-blur-sm hidden md:hidden" onclick="toggleMobileSidebar()"></div>
 
     <!-- SIDEBAR NAVIGATION -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 transform -translate-x-full md:translate-x-0 md:static md:inset-auto flex flex-col transition-transform duration-300 ease-in-out border-r border-slate-800 shadow-xl md:shadow-none">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-[#0F3D3A] text-slate-200 transform -translate-x-full md:translate-x-0 md:static md:inset-auto flex flex-col transition-transform duration-300 ease-in-out border-r border-[#1C514D] shadow-xl md:shadow-none">
         
         <!-- Sidebar Brand Logo Header -->
-        <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+        <div class="p-6 border-b border-[#1C514D] flex items-center justify-between">
             <a href="{{ auth()->check() && auth()->user()->role === 'admin' ? route('dashboard') : route('home') }}" class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-lg shadow-emerald-600/30">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-forest-700 to-forest-500 flex items-center justify-center text-white shadow-lg shadow-forest-950/30">
                     <i class="fa-solid fa-wallet text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="font-heading font-extrabold text-lg text-white tracking-tight">SPK <span class="text-emerald-400">E-Wallet</span></h1>
-                    <span class="text-[11px] font-semibold tracking-wider text-emerald-300 uppercase block">Metode SAW</span>
+                    <h1 class="font-heading font-extrabold text-lg text-white tracking-tight">SPK <span class="text-gold-400">E-Wallet</span></h1>
+                    <span class="text-[11px] font-semibold tracking-wider text-gold-300 uppercase block">Metode SAW</span>
                 </div>
             </a>
             <button class="md:hidden text-slate-400 hover:text-white" onclick="toggleMobileSidebar()">
@@ -110,51 +179,47 @@
             <div class="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">Menu Utama</div>
             
             @if(auth()->check() && auth()->user()->role === 'admin')
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard') ? 'sidebar-active font-semibold' : 'text-slate-400 hover:bg-slate-800/80 hover:text-white' }}">
-                <i class="fa-solid fa-chart-pie w-5 text-center text-emerald-400"></i>
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard') ? 'sidebar-active font-semibold' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                <i class="fa-solid fa-chart-pie w-5 text-center text-gold-400"></i>
                 <span>Dashboard</span>
             </a>
             @endif
 
             @if(auth()->check() && auth()->user()->role === 'admin')
-            <a href="{{ route('criteria.index') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('criteria.*') ? 'sidebar-active font-semibold' : 'text-slate-400 hover:bg-slate-800/80 hover:text-white' }}">
-                <i class="fa-solid fa-sliders w-5 text-center text-sky-400"></i>
+            <a href="{{ route('criteria.index') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('criteria.*') ? 'sidebar-active font-semibold' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                <i class="fa-solid fa-sliders w-5 text-center text-gold-300"></i>
                 <span>Kriteria</span>
             </a>
 
-            <a href="{{ route('alternatives.index') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('alternatives.*') ? 'sidebar-active font-semibold' : 'text-slate-400 hover:bg-slate-800/80 hover:text-white' }}">
-                <i class="fa-solid fa-wallet w-5 text-center text-amber-400"></i>
+            <a href="{{ route('alternatives.index') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('alternatives.*') ? 'sidebar-active font-semibold' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                <i class="fa-solid fa-wallet w-5 text-center text-gold-400"></i>
                 <span>Alternatif E-Wallet</span>
             </a>
-            <a href="{{ route('respondents.index') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('respondents.*') ? 'sidebar-active font-semibold' : 'text-slate-400 hover:bg-slate-800/80 hover:text-white' }}">
-                <i class="fa-solid fa-users w-5 text-center text-sky-400"></i>
+            <a href="{{ route('respondents.index') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('respondents.*') ? 'sidebar-active font-semibold' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                <i class="fa-solid fa-users w-5 text-center text-gold-300"></i>
                 <span>Data Responden</span>
             </a>
 
-            <a href="{{ route('import.index') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('import.*') ? 'sidebar-active font-semibold' : 'text-slate-400 hover:bg-slate-800/80 hover:text-white' }}">
-                <i class="fa-solid fa-file-csv w-5 text-center text-teal-400"></i>
-                <span>Import Kuesioner</span>
-            </a>
             @endif
 
             <div class="px-3 pt-4 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">Hitung & Rekomendasi</div>
 
             @if(auth()->check() && auth()->user()->role === 'admin')
-            <a href="{{ route('saw.process') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('saw.*') ? 'sidebar-active font-semibold' : 'text-slate-400 hover:bg-slate-800/80 hover:text-white' }}">
-                <i class="fa-solid fa-calculator w-5 text-center text-emerald-400"></i>
+            <a href="{{ route('saw.process') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('saw.*') ? 'sidebar-active font-semibold' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                <i class="fa-solid fa-calculator w-5 text-center text-gold-400"></i>
                 <span>Proses SAW</span>
             </a>
             @endif
 
-            <a href="{{ route('ranking.index') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('ranking.*') ? 'sidebar-active font-semibold' : 'text-slate-400 hover:bg-slate-800/80 hover:text-white' }}">
-                <i class="fa-solid fa-trophy w-5 text-center text-amber-400"></i>
+            <a href="{{ route('ranking.index') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('ranking.*') ? 'sidebar-active font-semibold' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                <i class="fa-solid fa-trophy w-5 text-center text-gold-400"></i>
                 <span>Hasil Ranking</span>
             </a>
 
             @if(auth()->check() && auth()->user()->role === 'admin')
             <div class="px-3 pt-4 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">Informasi</div>
 
-            <a href="{{ route('about') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('about') ? 'sidebar-active font-semibold' : 'text-slate-400 hover:bg-slate-800/80 hover:text-white' }}">
+            <a href="{{ route('about') }}" class="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all {{ request()->routeIs('about') ? 'sidebar-active font-semibold' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                 <i class="fa-solid fa-circle-info w-5 text-center text-slate-400"></i>
                 <span>Tentang Sistem</span>
             </a>
@@ -162,11 +227,11 @@
         </nav>
 
         <!-- Sidebar Footer Status -->
-        <div class="p-4 border-t border-slate-800 bg-slate-950/40 text-xs text-slate-500">
+        <div class="p-4 border-t border-[#1C514D] bg-black/10 text-xs text-slate-300">
             <div class="flex items-center justify-between mb-1">
                 <span class="font-semibold text-slate-400">Metode SAW:</span>
-                <span class="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-bold">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Active
+                <span class="inline-flex items-center gap-1 text-[11px] text-gold-300 font-bold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-gold-400 animate-pulse"></span> Active
                 </span>
             </div>
             <p class="text-[11px] text-slate-500">GoPay, ShopeePay, OVO, DANA</p>
@@ -189,11 +254,11 @@
 
             <div class="flex items-center gap-3">
                 <span class="hidden lg:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold">
-                    <i class="fa-solid fa-microchip text-emerald-600"></i> Engine: Simple Additive Weighting
+                    <i class="fa-solid fa-microchip text-forest-600"></i> Engine: Simple Additive Weighting
                 </span>
                 
                 @if(auth()->check() && auth()->user()->role === 'admin')
-                <a href="{{ route('saw.process') }}" class="fixed bottom-6 right-6 z-40 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 shadow-2xl shadow-emerald-600/30 transition-all">
+                <a href="{{ route('saw.process') }}" class="fixed bottom-6 right-6 z-40 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-forest-950 bg-gold-400 hover:bg-gold-300 active:bg-gold-500 shadow-2xl shadow-gold-600/30 transition-all">
                     <i class="fa-solid fa-play text-xs"></i>
                     <span>Hitung SAW</span>
                 </a>

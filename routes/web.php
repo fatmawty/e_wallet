@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CriterionController;
 use App\Http\Controllers\AlternativeController;
-use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\SawProcessController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\AboutController;
@@ -14,7 +13,6 @@ use App\Http\Controllers\EWalletController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RespondentController;
 use App\Http\Controllers\PublicController;
-use App\Http\Controllers\ImportKuesionerController;
 
 // Authentication
 Route::middleware('guest')->group(function () {
@@ -52,11 +50,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 	Route::put('/alternatif/{id}', [AlternativeController::class, 'update'])->name('alternatives.update');
 	Route::delete('/alternatif/{id}', [AlternativeController::class, 'destroy'])->name('alternatives.destroy');
 
-	// Existing legacy matrix routes remain available to Admin only.
-	Route::get('/penilaian', [ScoreController::class, 'index'])->name('scores.index');
-	Route::post('/penilaian', [ScoreController::class, 'store'])->name('scores.store');
-	Route::post('/penilaian/reset', [ScoreController::class, 'reset'])->name('scores.reset');
-
 	// Process SAW (Stepper 7 Langkah)
 	Route::get('/proses-saw', [SawProcessController::class, 'index'])->name('saw.process');
 	Route::post('/proses-saw/calculate', [SawProcessController::class, 'calculate'])->name('saw.calculate');
@@ -65,7 +58,4 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 	// Tentang Sistem SPK
 	Route::get('/tentang', [AboutController::class, 'index'])->name('about');
 
-	// Import Kuesioner CSV → Hitung Bobot Otomatis
-	Route::get('/import-kuesioner', [ImportKuesionerController::class, 'index'])->name('import.index');
-	Route::post('/import-kuesioner', [ImportKuesionerController::class, 'store'])->name('import.store');
 });

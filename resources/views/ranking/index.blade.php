@@ -8,6 +8,12 @@
 @section('content')
 <div class="space-y-8">
 
+    @if(!$calcResult['has_data'])
+        <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+            {{ $calcResult['message'] }}
+        </div>
+    @endif
+
     {{-- REKOMENDASI TERBAIK (CARD BESAR) --}}
     @if(isset($calcResult['best_alternative']))
         <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-8 sm:p-10">

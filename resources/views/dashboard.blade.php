@@ -8,6 +8,12 @@
 @section('content')
 <div class="space-y-8">
 
+    @if(!$calcResult['has_data'])
+        <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+            {{ $calcResult['message'] }}
+        </div>
+    @endif
+
     <!-- SURVEY CTA -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -254,7 +260,7 @@
 
         const barColors = [
             @foreach($results as $res)
-                "#10b981",
+                "#0F3D3A",
             @endforeach
         ];
 

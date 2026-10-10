@@ -31,19 +31,15 @@ class CriteriaController extends Controller
             'code' => ['required', 'string', 'max:10', 'unique:criteria,code'],
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', Rule::in(['benefit', 'cost'])],
-            'weight' => ['required', 'numeric', 'min:0', 'max:1'],
             'description' => ['nullable', 'string'],
         ], [
             'code.required' => 'Kode kriteria wajib diisi.',
             'code.unique' => 'Kode kriteria sudah digunakan, gunakan kode lain.',
             'name.required' => 'Nama kriteria wajib diisi.',
             'type.required' => 'Jenis kriteria wajib dipilih.',
-            'weight.required' => 'Bobot kriteria wajib diisi.',
-            'weight.numeric' => 'Bobot harus berupa angka.',
-            'weight.min' => 'Bobot tidak boleh kurang dari 0.',
-            'weight.max' => 'Bobot maksimal bernilai 1 (100%).',
         ]);
 
+        $validated['weight'] = 0;
         Criterion::create($validated);
 
         // Recalculate SAW
@@ -58,17 +54,12 @@ class CriteriaController extends Controller
             'code' => ['required', 'string', 'max:10', Rule::unique('criteria', 'code')->ignore($kriterium->id)],
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', Rule::in(['benefit', 'cost'])],
-            'weight' => ['required', 'numeric', 'min:0', 'max:1'],
             'description' => ['nullable', 'string'],
         ], [
             'code.required' => 'Kode kriteria wajib diisi.',
             'code.unique' => 'Kode kriteria sudah digunakan.',
             'name.required' => 'Nama kriteria wajib diisi.',
             'type.required' => 'Jenis kriteria wajib dipilih.',
-            'weight.required' => 'Bobot kriteria wajib diisi.',
-            'weight.numeric' => 'Bobot harus berupa angka.',
-            'weight.min' => 'Bobot tidak boleh kurang dari 0.',
-            'weight.max' => 'Bobot maksimal bernilai 1 (100%).',
         ]);
 
         $kriterium->update($validated);

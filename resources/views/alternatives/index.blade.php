@@ -27,7 +27,7 @@
                 <div>
                     <!-- Header Icon & Status -->
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 rounded-2xl text-white font-heading font-extrabold text-xl flex items-center justify-center shadow-md" data-brand-color="{{ $alt->brand_color ?? '#4f46e5' }}">
+                        <div class="w-12 h-12 rounded-2xl text-white font-heading font-extrabold text-xl flex items-center justify-center shadow-md" data-brand-color="{{ $alt->brand_color ?? '#0F3D3A' }}">
                             {{ substr($alt->name, 0, 1) }}
                         </div>
                         <span class="font-mono font-bold text-xs text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">
@@ -98,7 +98,7 @@
 
             <div>
                 <label for="brand_color" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Warna Brand (Hex Color)</label>
-                <input type="color" name="brand_color" id="brand_color" value="#4f46e5" class="h-10 w-full rounded-xl border border-slate-200 cursor-pointer">
+                <input type="color" name="brand_color" id="brand_color" value="#0F3D3A" class="h-10 w-full rounded-xl border border-slate-200 cursor-pointer">
             </div>
 
             <div>
@@ -119,7 +119,7 @@
 <script>
     function applyBrandColors() {
         document.querySelectorAll('[data-brand-color]').forEach((element) => {
-            element.style.backgroundColor = element.dataset.brandColor || '#4f46e5';
+            element.style.backgroundColor = element.dataset.brandColor || '#0F3D3A';
         });
     }
 
@@ -140,7 +140,7 @@
         document.getElementById('altFormMethod').value = 'POST';
         document.getElementById('alt_code').value = '';
         document.getElementById('alt_name').value = '';
-        document.getElementById('brand_color').value = '#4f46e5';
+        document.getElementById('brand_color').value = '#0F3D3A';
         document.getElementById('alt_description').value = '';
         modal.classList.remove('hidden');
         modal.classList.add('flex');
@@ -153,7 +153,7 @@
         document.getElementById('altFormMethod').value = 'PUT';
         document.getElementById('alt_code').value = alt.code;
         document.getElementById('alt_name').value = alt.name;
-        document.getElementById('brand_color').value = alt.brand_color || '#4f46e5';
+        document.getElementById('brand_color').value = alt.brand_color || '#0F3D3A';
         document.getElementById('alt_description').value = alt.description || '';
         modal.classList.remove('hidden');
         modal.classList.add('flex');

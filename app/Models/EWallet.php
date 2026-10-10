@@ -26,8 +26,4 @@ class EWallet extends Model
         return $this->hasMany(Rating::class, 'e_wallet_id');
     }
 
-    public function primaryRespondents(): HasMany
-    {
-        return $this->hasMany(Respondent::class, 'primary_e_wallet_id');
-    }
 }

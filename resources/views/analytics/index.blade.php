@@ -116,25 +116,7 @@
         </div>
 
         <!-- Demographics Breakdown -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Usage Distribution Bar Chart -->
-            <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
-                <h3 class="font-heading font-bold text-lg text-slate-900 mb-4">Sebaran Pengguna Utama (%)</h3>
-                <div class="space-y-4">
-                    @foreach($usageBreakdown as $ub)
-                        <div>
-                            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                                <span>{{ $ub['wallet']->name }}</span>
-                                <span>{{ $ub['count'] }} Mahasiswa ({{ $ub['pct'] }}%)</span>
-                            </div>
-                            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full rounded-full transition-all duration-500" style="width: {{ $ub['pct'] }}%; background-color: {{ $ub['wallet']->color_hex }}"></div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
+        <div>
             <!-- University Breakdown Table -->
             <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
                 <h3 class="font-heading font-bold text-lg text-slate-900 mb-4">Sebaran Kampus Responden</h3>

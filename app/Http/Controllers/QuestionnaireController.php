@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\EWallet;
 use App\Models\Criterion;
-use App\Models\Respondent;
+use App\Models\CriterionImportanceRating;
 use App\Models\Rating;
+use App\Models\Respondent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -43,15 +44,20 @@ class QuestionnaireController extends Controller
         // Validation rules
         $rules = [
             'name' => 'required|string|max:255',
-            'status' => 'required|string|max:100',
+            'student_confirmation' => 'accepted',
+            'research_consent' => 'accepted',
             'institution' => 'required|string|max:255',
-            'major' => 'nullable|string|max:255',
-            'primary_e_wallet_id' => 'required|exists:e_wallets,id',
+            'major' => 'required|string|max:255',
+            'cohort_year' => 'required|integer|min:2000|max:' . now()->year,
             'general_feedback' => 'nullable|string|max:1000',
+            'importance' => 'required|array',
             'ratings' => 'required|array',
         ];
 
-        // Ensure every ewallet has ratings for every criterion (1-5)
+        foreach ($criteria as $crit) {
+            $rules["importance.{$crit->id}"] = 'required|integer|min:1|max:5';
+        }
+
         foreach ($wallets as $wallet) {
             foreach ($criteria as $crit) {
                 $rules["ratings.{$wallet->id}.{$crit->id}"] = 'required|integer|min:1|max:5';
@@ -60,22 +66,36 @@ class QuestionnaireController extends Controller
 
         $validated = $request->validate($rules, [
             'name.required' => 'Nama responden wajib diisi.',
-            'status.required' => 'Status wajib dipilih.',
+            'student_confirmation.accepted' => 'Konfirmasi bahwa Anda mahasiswa aktif wajib disetujui.',
+            'research_consent.accepted' => 'Persetujuan partisipasi penelitian wajib disetujui untuk mengirim jawaban.',
             'institution.required' => 'Nama Perguruan Tinggi / Instansi wajib diisi.',
-            'primary_e_wallet_id.required' => 'Silakan pilih E-Wallet utama yang paling sering Anda gunakan.',
+            'major.required' => 'Program studi wajib diisi.',
+            'cohort_year.required' => 'Tahun angkatan wajib diisi.',
+            'cohort_year.integer' => 'Tahun angkatan harus berupa tahun.',
+            'cohort_year.min' => 'Tahun angkatan tidak valid.',
+            'cohort_year.max' => 'Tahun angkatan tidak boleh melebihi tahun saat ini.',
+            'importance.*.required' => 'Mohon isi tingkat kepentingan untuk semua kriteria.',
             'ratings.*.*.required' => 'Mohon lengkapi semua penilaian skala Likert 1-5 untuk tiap kriteria.',
         ]);
 
         DB::transaction(function () use ($validated, $wallets, $criteria) {
-            // Create Respondent record
             $respondent = Respondent::create([
                 'name' => $validated['name'],
-                'status' => $validated['status'],
+                'status' => 'Mahasiswa Aktif',
                 'institution' => $validated['institution'],
-                'major' => $validated['major'] ?? null,
-                'primary_e_wallet_id' => $validated['primary_e_wallet_id'],
+                'major' => $validated['major'],
+                'cohort_year' => (int) $validated['cohort_year'],
                 'general_feedback' => $validated['general_feedback'] ?? null,
+                'consented_at' => now(),
             ]);
+
+            foreach ($criteria as $crit) {
+                CriterionImportanceRating::create([
+                    'respondent_id' => $respondent->id,
+                    'criterion_id' => $crit->id,
+                    'score' => (int) $validated['importance'][$crit->id],
+                ]);
+            }
 
             // Save Ratings for each E-Wallet and Criterion
             foreach ($wallets as $wallet) {

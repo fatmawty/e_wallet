@@ -3,34 +3,35 @@
 @section('title', 'Kelola Kriteria - SPK Pemilihan E-Wallet Terbaik')
 
 @section('page-title', 'Daftar 7 Kriteria & Bobot Penilaian')
-@section('page-subtitle', 'Daftar 7 dimensi kriteria SAW. Bobot kriteria dihitung secara otomatis berdasarkan hasil kuesioner CSV Google Forms.')
+@section('page-subtitle', 'Daftar kriteria dan bobot yang digunakan dalam metode SAW.')
 
 @section('content')
 <div class="space-y-6">
     
     <!-- Weight Status Banner -->
-    <div class="p-5 rounded-3xl border {{ $isWeightValid ? 'bg-emerald-50/80 border-emerald-200 text-emerald-900' : 'bg-amber-50/90 border-amber-200 text-amber-900' }} flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+    <div class="p-5 rounded-3xl border {{ $hasDynamicWeights && $isWeightValid ? 'bg-emerald-50/80 border-emerald-200 text-emerald-900' : 'bg-amber-50/90 border-amber-200 text-amber-900' }} flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl {{ $isWeightValid ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white' }} flex items-center justify-center font-bold text-lg shrink-0">
-                <i class="fa-solid {{ $isWeightValid ? 'fa-scale-balanced' : 'fa-triangle-exclamation' }}"></i>
+            <div class="w-10 h-10 rounded-2xl {{ $hasDynamicWeights && $isWeightValid ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white' }} flex items-center justify-center font-bold text-lg shrink-0">
+                <i class="fa-solid {{ $hasDynamicWeights && $isWeightValid ? 'fa-scale-balanced' : 'fa-triangle-exclamation' }}"></i>
             </div>
             <div>
                 <h4 class="font-heading font-bold text-base">
-                    Total Bobot 7 Kriteria Saat Ini: <span class="font-mono text-lg font-extrabold">{{ number_format($totalWeight, 4) }}</span> ({{ number_format($totalWeight * 100, 1) }}%)
-                </h4>
-                <p class="text-xs {{ $isWeightValid ? 'text-emerald-700' : 'text-amber-800' }} mt-0.5">
-                    @if($isWeightValid)
-                        Total bobot memenuhi syarat konsistensi SAW (persentase pas 100% atau 1.0000).
+                    @if($hasDynamicWeights)
+                        Total Bobot dari {{ $weightRespondentCount }} Responden: <span class="font-mono text-lg font-extrabold">{{ number_format($totalWeight, 4) }}</span> ({{ number_format($totalWeight * 100, 1) }}%)
                     @else
-                        <strong>Peringatan!</strong> Total bobot kriteria sebaiknya berjumlah persis 1.0000 (100%). Silakan lakukan Import Kuesioner CSV.
+                        Bobot responden belum tersedia
+                    @endif
+                </h4>
+                <p class="text-xs {{ $hasDynamicWeights && $isWeightValid ? 'text-emerald-700' : 'text-amber-800' }} mt-0.5">
+                    @if($hasDynamicWeights && $isWeightValid)
+                        Bobot dihitung dari jawaban tingkat kepentingan responden dan totalnya 100%.
+                    @else
+                        Bobot baru dihitung setelah ada responden yang mengisi seluruh tingkat kepentingan dan penilaian e-wallet.
                     @endif
                 </p>
             </div>
         </div>
 
-        <a href="{{ route('import.index') }}" class="px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-teal-600 hover:bg-teal-700 active:bg-teal-800 shadow-md shadow-teal-600/20 transition-all shrink-0 flex items-center gap-2">
-            <i class="fa-solid fa-file-csv"></i> Import Kuesioner (Hitung Bobot)
-        </a>
     </div>
 
     <!-- Criteria Table Card -->
@@ -39,16 +40,13 @@
         <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <h3 class="font-heading font-bold text-lg text-slate-900">Daftar 7 Kriteria SAW (C1 &ndash; C7)</h3>
-                <p class="text-xs text-slate-500">Nilai bobot di bawah ini diperoleh secara otomatis dari hasil kuesioner CSV responden.</p>
+                <p class="text-xs text-slate-500">Bobot berasal dari jawaban tingkat kepentingan responden, bukan penilaian admin.</p>
             </div>
 
             <!-- Legend Badge -->
             <div class="flex items-center gap-3 text-xs">
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold" title="Benefit: Semakin besar nilai semakin baik">
-                    <i class="fa-solid fa-arrow-up-right-dots"></i> Benefit (6 Kriteria)
-                </span>
-                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 font-semibold" title="Cost: Semakin kecil nilai semakin baik">
-                    <i class="fa-solid fa-arrow-down-right-dots"></i> Cost (1 Kriteria)
+                    <i class="fa-solid fa-arrow-up-right-dots"></i> Benefit (7 Kriteria)
                 </span>
             </div>
         </div>
@@ -103,9 +101,7 @@
             <i class="fa-solid fa-lightbulb text-indigo-600"></i> Sumber Bobot Kriteria
         </h4>
         <p class="text-slate-600 leading-relaxed">
-            Sistem SPK menggunakan pembobotan otomatis berbasis kuesioner responden Google Forms.
-            Admin tidak perlu menginput bobot secara manual. Untuk memperbarui bobot kriteria, silakan gunakan menu
-            <a href="{{ route('import.index') }}" class="font-bold text-indigo-700 underline">Import Data Kuesioner</a>.
+            Setiap responden menilai kepentingan semua kriteria dengan skala 1–5. Sistem menghitung rata-rata jawaban tiap kriteria, kemudian membaginya dengan total seluruh rata-rata untuk memperoleh bobot yang jumlahnya 1. Responden baru diperhitungkan jika seluruh jawaban kepentingan dan penilaian e-wallet lengkap.
         </p>
     </div>
 

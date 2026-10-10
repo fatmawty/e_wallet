@@ -30,32 +30,39 @@ Alternatif E-Wallet yang dievaluasi:
 Metode SAW (penjumlahan terbobot) dilakukan dengan langkah-langhat matematis berikut:
 
 ### Kriteria Penilaian Default:
-- **C1: Penilaian Masyarakat** (Benefit, Bobot: `0.20` / 20%)
-- **C2: Kemudahan Penggunaan** (Benefit, Bobot: `0.30` / 30%)
-- **C3: Keamanan** (Benefit, Bobot: `0.30` / 30%)
-- **C4: Fitur Layanan** (Benefit, Bobot: `0.10` / 10%)
-- **C5: Biaya Admin** (Cost, Bobot: `0.10` / 10%)
+- **C1: Keamanan** (Benefit)
+- **C2: Kemudahan Penggunaan** (Benefit)
+- **C3: Promo dan Cashback** (Benefit)
+- **C4: Keterjangkauan Biaya Transaksi** (Benefit)
+- **C5: Kelengkapan Fitur** (Benefit)
+- **C6: Kemudahan Top Up** (Benefit)
+- **C7: Merchant/Layanan** (Benefit)
+
+Responden mengisi tingkat kepentingan setiap kriteria pada skala 1–5. Sistem menghitung rata-rata tingkat kepentingan per kriteria, lalu menormalisasikannya menjadi bobot dengan total 1. Bobot tidak diinput atau dinilai oleh admin.
 
 ### Formula SAW:
-1. **Matriks Keputusan ($X_{ij}$)**: Mengambil skor asli alternatif pada setiap kriteria (Skala Likert 1–5).
-2. **Normalisasi ($R_{ij}$)**:
+1. **Bobot Kriteria ($W_j$)**: Mengambil rata-rata skor kepentingan responden per kriteria, kemudian membagi rata-rata setiap kriteria dengan jumlah rata-rata semua kriteria.
+2. **Matriks Keputusan ($X_{ij}$)**: Mengambil rata-rata skor responden untuk setiap alternatif dan kriteria (Skala Likert 1–5). Tidak ada skor alternatif yang diinput admin.
+3. **Normalisasi ($R_{ij}$)**:
    - **Kriteria Benefit**: $r_{ij} = \frac{x_{ij}}{\max(x_{ij})}$
    - **Kriteria Cost**: $r_{ij} = \frac{\min(x_{ij})}{x_{ij}}$
-3. **Nilai Preferensi ($V_i$)**:
+4. **Nilai Preferensi ($V_i$)**:
    $$V_i = \sum_{j=1}^n (w_j \times r_{ij})$$
-4. **Perangkingan**: Mengurutkan alternatif berdasarkan nilai $V_i$ tertinggi ke terendah secara otomatis.
+5. **Perangkingan**: Mengurutkan alternatif berdasarkan nilai $V_i$ tertinggi ke terendah secara otomatis.
 
 ---
 
 ## 🗄️ 4. Struktur Database & Model
 
 1. **`criteria`** (`Criterion.php`)
-   - `id`, `code` (C1..C5), `name`, `type` (`benefit`/`cost`), `weight` (decimal 0.00-1.00), `description`
+   - `id`, `code` (C1..C7), `name`, `type` (`benefit`/`cost`), `weight` (decimal 0.00-1.00), `description`
 2. **`alternatives`** (`Alternative.php`)
    - `id`, `code` (A1..A4), `name`, `description`, `brand_color`, `logo_icon`, `status`
-3. **`alternative_scores`** (`AlternativeScore.php`)
-   - `id`, `alternative_id`, `criteria_id`, `score` (1–5)
-4. **`calculation_results`** (`CalculationResult.php`)
+3. **`ratings`** (`Rating.php`)
+   - `respondent_id`, `e_wallet_id`, `criterion_id`, `score` (1–5)
+4. **`criterion_importance_ratings`** (`CriterionImportanceRating.php`)
+   - `respondent_id`, `criterion_id`, `score` (1–5); menjadi sumber bobot kriteria.
+5. **`calculation_results`** (`CalculationResult.php`)
    - `id`, `alternative_id`, `final_score`, `rank`, `details`
 
 ---
@@ -89,7 +96,7 @@ Metode SAW (penjumlahan terbobot) dilakukan dengan langkah-langhat matematis ber
    ```
 
 5. **Jalankan Migration & Seeder**:
-   Command ini akan membuat skema tabel dan mengisi data awal (kriteria, alternatif, nilai benchmark):
+   Command ini akan membuat skema tabel dan mengisi data awal (kriteria dan alternatif):
    ```bash
    php artisan migrate:fresh --seed
    ```
@@ -107,11 +114,11 @@ Metode SAW (penjumlahan terbobot) dilakukan dengan langkah-langhat matematis ber
 1. **Dashboard (`/`)**:
    - Menampilkan ringkasan statistik, rekomendasi e-wallet terbaik saat ini, grafik batang Chart.js, dan tabel pemeringkatan.
 2. **Kelola Kriteria (`/kriteria`)**:
-   - Mengubah bobot, menambah/menghapus kriteria, dan validasi indikator total bobot (harus 100%).
+   - Menambah/mengubah/menghapus kriteria; bobot ditentukan otomatis dari jawaban responden.
 3. **Kelola Alternatif (`/alternatif`)**:
    - Mengelola data e-wallet (DANA, OVO, ShopeePay, GoPay) beserta warna brand & deskripsi.
-4. **Penilaian Alternatif (`/penilaian`)**:
-   - Menginputkan nilai matriks kriteria (1 = Tidak Baik s.d. 5 = Sangat Baik) menggunakan dropdown sederhana. Terdapat tombol simpan & reset ke benchmark default.
+4. **Kuesioner (`/kuesioner`)**:
+   - Mahasiswa aktif mengisi program studi, institusi, angkatan, persetujuan partisipasi, tingkat kepentingan seluruh kriteria, serta penilaian setiap e-wallet. Nama, NIM, nomor telepon, dan email tidak diminta. Hanya respons lengkap untuk kedua bagian yang digunakan dalam pembobotan dan matriks keputusan SAW.
 5. **Proses SAW (`/proses-saw`)**:
    - Menampilkan seluruh tahapan matematis SAW (Matriks Keputusan, Normalisasi, Preferensi, dan Perangkingan) secara transparan.
 6. **Hasil Ranking (`/hasil-ranking`)**:

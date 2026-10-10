@@ -47,13 +47,13 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-10">
             <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold uppercase tracking-wider mb-4">
-                <i class="fa-solid fa-file-signature text-indigo-600"></i> Survei Persepsi & Kepuasan Pengguna
+                <i class="fa-solid fa-file-signature text-indigo-600"></i> Survei Penilaian E-Wallet Mahasiswa
             </span>
             <h1 class="font-heading font-extrabold text-3xl sm:text-4xl text-slate-900 tracking-tight mb-3">
                 Kuesioner Evaluasi E-Wallet
             </h1>
             <p class="text-slate-600 text-sm max-w-3xl mx-auto leading-relaxed">
-                Mohon luangkan waktu untuk menilai empat e-wallet utama berdasarkan tujuh kriteria yang telah ditetapkan. Setiap pilihan skala bersifat kosong secara default dan hanya diisi sesuai pengalaman Anda.
+                Kuesioner ini ditujukan bagi mahasiswa aktif. Isilah tingkat kepentingan kriteria dan penilaian empat e-wallet berdasarkan pengalaman atau pengetahuan yang cukup untuk menilainya. Setiap pilihan skala bersifat kosong secara default.
             </p>
         </div>
 
@@ -87,17 +87,8 @@
             <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                     <div>
-                        <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Nama Lengkap / Inisial <span class="text-rose-500">*</span></label>
-                        <input type="text" name="name" id="name" required value="{{ old('name') }}" placeholder="Contoh: Aditya Pratama" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all">
-                    </div>
-
-                    <div>
-                        <label for="status" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Status Pekerjaan / Responden <span class="text-rose-500">*</span></label>
-                        <select name="status" id="status" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-sm bg-white transition-all">
-                            <option value="Mahasiswa" {{ old('status') == 'Mahasiswa' ? 'selected' : '' }}>Mahasiswa (S1/D3/D4/S2)</option>
-                            <option value="Pelajar" {{ old('status') == 'Pelajar' ? 'selected' : '' }}>Pelajar SMA / SMK</option>
-                            <option value="Alumni / Pekerja" {{ old('status') == 'Alumni / Pekerja' ? 'selected' : '' }}>Alumni / Pekerja / Umum</option>
-                        </select>
+                        <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Nama Responden <span class="text-rose-500">*</span></label>
+                        <input type="text" name="name" id="name" required maxlength="255" value="{{ old('name') }}" placeholder="Masukkan nama Anda" autocomplete="name" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all">
                     </div>
 
                     <div>
@@ -106,26 +97,28 @@
                     </div>
 
                     <div>
-                        <label for="major" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Program Studi / Jurusan</label>
-                        <input type="text" name="major" id="major" value="{{ old('major') }}" placeholder="Contoh: Teknik Informatika / Manajemen" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all">
+                        <label for="major" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Program Studi <span class="text-rose-500">*</span></label>
+                        <input type="text" name="major" id="major" required value="{{ old('major') }}" placeholder="Contoh: Teknik Informatika" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all">
                     </div>
 
-                    <div class="sm:col-span-2">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-3">E-Wallet Utama Yang Paling Sering Anda Gunakan <span class="text-rose-500">*</span></label>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            @foreach($wallets as $wallet)
-                                <label class="group relative cursor-pointer">
-                                    <input type="radio" name="primary_e_wallet_id" value="{{ $wallet->id }}" class="peer sr-only" required {{ old('primary_e_wallet_id') == $wallet->id ? 'checked' : '' }}>
-                                    <div class="p-4 rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-indigo-300 hover:shadow-lg hover:shadow-indigo-100/70 hover:bg-indigo-50/40 active:translate-y-0 active:scale-[0.98] peer-checked:border-indigo-600 peer-checked:bg-indigo-50/80 peer-checked:ring-2 peer-checked:ring-indigo-600/30 peer-checked:shadow-lg peer-checked:shadow-indigo-100 peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-500/50 text-center">
-                                        <div class="wallet-badge w-8 h-8 rounded-full text-white font-bold text-xs flex items-center justify-center mx-auto mb-2 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 peer-checked:scale-110" data-wallet-color="{{ $wallet->color_hex ?? '#4f46e5' }}">
-                                            {{ substr($wallet->name, 0, 1) }}
-                                        </div>
-                                        <span class="font-heading font-bold text-sm text-slate-900 block transition-colors duration-200 group-hover:text-indigo-700 peer-checked:text-indigo-700">{{ $wallet->name }}</span>
-                                    </div>
-                                </label>
-                            @endforeach
-                        </div>
+                    <div>
+                        <label for="cohort_year" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Angkatan <span class="text-rose-500">*</span></label>
+                        <input type="number" name="cohort_year" id="cohort_year" required min="2000" max="{{ now()->year }}" step="1" value="{{ old('cohort_year') }}" placeholder="Contoh: {{ now()->year - 2 }}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all">
                     </div>
+
+                </div>
+                <div class="space-y-3 border-t border-slate-100 pt-5">
+                    <label class="flex items-start gap-3 text-sm text-slate-700">
+                        <input type="checkbox" name="student_confirmation" value="1" required {{ old('student_confirmation') ? 'checked' : '' }} class="mt-1 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                        <span>Saya menyatakan bahwa saya mahasiswa aktif. <span class="text-rose-500">*</span></span>
+                    </label>
+                    <div class="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-relaxed text-sky-950">
+                        <strong>Informasi penelitian dan privasi:</strong> Partisipasi bersifat sukarela. Nama dan jawaban digunakan peneliti untuk pengelolaan serta analisis penelitian pemilihan e-wallet. Nama tidak ditampilkan pada website publik dan harus dihapus/diganti kode sebelum hasil penelitian dibagikan; hasil dilaporkan secara agregat. Peneliti/admin dapat melihat data mentah. Ulasan opsional dapat ditampilkan secara anonim di website. Hindari menuliskan data pribadi di kolom ulasan.
+                    </div>
+                    <label class="flex items-start gap-3 text-sm text-slate-700">
+                        <input type="checkbox" name="research_consent" value="1" required {{ old('research_consent') ? 'checked' : '' }} class="mt-1 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                        <span>Saya telah membaca informasi di atas, memahami tujuan penggunaan jawaban, dan bersedia berpartisipasi secara sukarela. <span class="text-rose-500">*</span></span>
+                    </label>
                 </div>
             </div>
 
@@ -135,8 +128,60 @@
                         2
                     </div>
                     <div>
-                        <h2 class="font-heading font-bold text-xl text-slate-900">Penilaian Kriteria</h2>
-                        <p class="text-xs text-slate-500">Setiap kriteria memiliki satu pertanyaan utama dan empat penilaian e-wallet.</p>
+                        <h2 class="font-heading font-bold text-xl text-slate-900">Tingkat Kepentingan Kriteria</h2>
+                        <p class="text-xs text-slate-500">Tentukan seberapa penting setiap kriteria bagi Anda. Jawaban ini digunakan sistem untuk menghitung bobot SAW.</p>
+                    </div>
+                </div>
+
+                <div class="mb-6 rounded-2xl border border-sky-200 bg-sky-50 p-4">
+                    <div class="flex flex-wrap gap-2 text-[11px] font-semibold text-sky-900">
+                        @foreach([['value' => 1, 'label' => 'Sangat Tidak Penting'], ['value' => 2, 'label' => 'Tidak Penting'], ['value' => 3, 'label' => 'Cukup Penting'], ['value' => 4, 'label' => 'Penting'], ['value' => 5, 'label' => 'Sangat Penting']] as $scale)
+                            <span class="rounded-full border border-sky-200 bg-white px-2.5 py-1">{{ $scale['value'] }} = {{ $scale['label'] }}</span>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    @foreach($criteria as $criterion)
+                        <section class="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+                            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                    <span class="font-mono text-xs font-bold text-indigo-600">{{ $criterion->code }}</span>
+                                    <h3 class="font-heading font-bold text-base text-slate-900">{{ $criterion->name }}</h3>
+                                    @if($criterion->description)
+                                        <p class="mt-1 text-xs text-slate-500">{{ $criterion->description }}</p>
+                                    @endif
+                                </div>
+                                <div class="grid w-full grid-cols-5 gap-2 sm:max-w-sm">
+                                    @for($score = 1; $score <= 5; $score++)
+                                        <label class="group relative block">
+                                            <input type="radio"
+                                                   id="importance_{{ $criterion->id }}_{{ $score }}"
+                                                   name="importance[{{ $criterion->id }}]"
+                                                   value="{{ $score }}"
+                                                   required
+                                                   class="peer sr-only"
+                                                   {{ old("importance.{$criterion->id}") == $score ? 'checked' : '' }}>
+                                            <span class="flex h-10 w-full items-center justify-center rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 shadow-sm transition-all cursor-pointer hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 peer-checked:border-indigo-600 peer-checked:bg-indigo-50 peer-checked:text-indigo-700 peer-checked:ring-2 peer-checked:ring-indigo-600/20 peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-500">
+                                                {{ $score }}
+                                            </span>
+                                        </label>
+                                    @endfor
+                                </div>
+                            </div>
+                        </section>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm">
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">
+                        3
+                    </div>
+                    <div>
+                        <h2 class="font-heading font-bold text-xl text-slate-900">Penilaian E-Wallet</h2>
+                        <p class="text-xs text-slate-500">Nilai semua e-wallet untuk setiap kriteria sesuai pengalaman Anda.</p>
                     </div>
                 </div>
 
@@ -170,7 +215,7 @@
                                 @foreach($wallets as $wallet)
                                     <div class="group/wallet rounded-2xl border border-slate-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-md">
                                         <div class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100">
-                                            <div class="wallet-badge w-8 h-8 rounded-xl text-white font-bold text-xs flex items-center justify-center transition-transform duration-300 group-hover/wallet:scale-110 group-hover/wallet:rotate-3" data-wallet-color="{{ $wallet->color_hex ?? '#4f46e5' }}">
+                                            <div class="wallet-badge w-8 h-8 rounded-xl text-white font-bold text-xs flex items-center justify-center transition-transform duration-300 group-hover/wallet:scale-110 group-hover/wallet:rotate-3" data-wallet-color="{{ $wallet->color_hex ?? '#0F3D3A' }}">
                                                 {{ substr($wallet->name, 0, 1) }}
                                             </div>
                                             <div>
@@ -205,17 +250,17 @@
             <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm">
                 <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
                     <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">
-                        3
+                        4
                     </div>
                     <div>
                         <h2 class="font-heading font-bold text-xl text-slate-900">Ulasan & Catatan Opsional</h2>
-                        <p class="text-xs text-slate-500">Berikan masukan atau pengalaman unik Anda menggunakan e-wallet pilihan Anda.</p>
+                        <p class="text-xs text-slate-500">Berikan masukan atau pengalaman tambahan Anda tentang e-wallet yang dinilai.</p>
                     </div>
                 </div>
 
                 <div class="mb-6">
-                    <label for="general_feedback" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Pesan / Alasan Memilih E-Wallet Utama Anda</label>
-                    <textarea name="general_feedback" id="general_feedback" rows="3" placeholder="Contoh: Saya paling suka ShopeePay karena promo dan kemudahan transaksinya..." class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all">{{ old('general_feedback') }}</textarea>
+                    <label for="general_feedback" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Pesan atau Pengalaman Tambahan (Opsional)</label>
+                    <textarea name="general_feedback" id="general_feedback" rows="3" placeholder="Contoh: Biaya transaksi pada e-wallet tertentu terasa lebih terjangkau..." class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all">{{ old('general_feedback') }}</textarea>
                 </div>
 
                 <div class="flex items-center justify-end gap-4 pt-4 border-t border-slate-100">
@@ -234,7 +279,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('[data-wallet-color]').forEach(function (badge) {
-            badge.style.backgroundColor = badge.dataset.walletColor || '#4f46e5';
+            badge.style.backgroundColor = badge.dataset.walletColor || '#0F3D3A';
         });
 
         const form = document.getElementById('form-kuesioner');
@@ -248,10 +293,12 @@
         function updateProgress() {
             const requiredRadioNames = [...new Set([...form.querySelectorAll('input[type="radio"][required]')].map(input => input.name))];
             const answeredRadios = requiredRadioNames.filter(name => form.querySelector(`input[name="${CSS.escape(name)}"]:checked`)).length;
-            const requiredFields = [...form.querySelectorAll('input[required]:not([type="radio"]), select[required], textarea[required]')];
+            const requiredFields = [...form.querySelectorAll('input[required]:not([type="radio"]):not([type="checkbox"]), select[required], textarea[required]')];
             const completedFields = requiredFields.filter(field => field.value.trim() !== '').length;
-            const total = requiredRadioNames.length + requiredFields.length;
-            const completed = answeredRadios + completedFields;
+            const requiredCheckboxes = [...form.querySelectorAll('input[type="checkbox"][required]')];
+            const completedCheckboxes = requiredCheckboxes.filter(field => field.checked).length;
+            const total = requiredRadioNames.length + requiredFields.length + requiredCheckboxes.length;
+            const completed = answeredRadios + completedFields + completedCheckboxes;
             const percentage = total ? Math.round((completed / total) * 100) : 0;
 
             progress.style.width = `${percentage}%`;

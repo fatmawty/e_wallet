@@ -9,12 +9,12 @@
 <div class="space-y-8">
     
     <!-- Top Action Banner & Trigger Button -->
-    <div class="bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 rounded-3xl p-6 text-white shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+    <div class="bg-gradient-to-r from-forest-700 via-forest-800 to-forest-950 rounded-3xl p-6 text-white shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
             <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-400 block mb-1">Metodologi Transparan</span>
             <h3 class="font-heading font-extrabold text-2xl text-white">Eksekusi Perhitungan SAW Dinamis</h3>
             <p class="text-xs text-slate-300 max-w-xl mt-1 leading-relaxed">
-                Tekan tombol di samping untuk mengeksekusi rumus matematis SAW menggunakan data terbaru dari database.
+                Bobot kriteria dihitung dari rata-rata jawaban kepentingan responden, lalu dinormalisasi agar totalnya 1. Nilai alternatif dihitung dari rata-rata penilaian e-wallet.
             </p>
         </div>
 
@@ -69,7 +69,7 @@
             <div class="p-6 border-b border-slate-100">
                 <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Tahap 1 & 2</span>
                 <h3 class="font-heading font-bold text-xl text-slate-900">Kriteria dan Bobot</h3>
-                <p class="text-xs text-slate-500 mt-1">Bobot diambil langsung dari tabel criteria dan digunakan tanpa perhitungan ulang.</p>
+                <p class="text-xs text-slate-500 mt-1">Bobot berasal dari rata-rata tingkat kepentingan {{ $calcResult['weight_respondent_count'] }} responden dan dinormalisasi ke total 1.</p>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse min-w-[600px]">
@@ -108,7 +108,9 @@
                     <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Tahap 4</span>
                     <h3 class="font-heading font-bold text-xl text-slate-900">Matriks Keputusan (X)</h3>
                 </div>
-                <span class="text-xs text-slate-500 bg-slate-100 px-3 py-1 rounded-xl">Rata-rata ratings (1 - 5)</span>
+                <span class="text-xs text-slate-500 bg-slate-100 px-3 py-1 rounded-xl">
+                    Rata-rata penilaian {{ $calcResult['respondent_count'] }} responden lengkap (skala 1–5)
+                </span>
             </div>
 
             <div class="overflow-x-auto">
@@ -347,6 +349,10 @@
             </div>
         </div>
 
+    @else
+        <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+            {{ $calcResult['message'] }}
+        </div>
     @endif
 
 </div>

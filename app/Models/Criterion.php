@@ -23,8 +23,4 @@ class Criterion extends Model
         'weight' => 'float',
     ];
 
-    public function alternativeScores()
-    {
-        return $this->hasMany(AlternativeScore::class, 'criteria_id');
-    }
 }

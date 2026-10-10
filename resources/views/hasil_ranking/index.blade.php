@@ -9,7 +9,7 @@
     <!-- Top Recommendation Highlight Card -->
     @if($bestAlternative)
         <div class="card-custom p-4 mb-4 position-relative overflow-hidden"
-             style="background: linear-gradient(135deg, #10b981, #059669); color: #ffffff;">
+             style="background: linear-gradient(135deg, #0F3D3A, #082523); color: #ffffff;">
             <div class="row align-items-center">
                 <div class="col-12 col-md-8 mb-3 mb-md-0">
                     <div class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-white bg-opacity-20 rounded-pill mb-3 text-white fw-bold style-sm" style="font-size: 0.82rem;">
@@ -188,7 +188,7 @@
 
         const colors = [
             @foreach($rankings as $item)
-                "{{ $item->alternative->brand_color ?? '#2563eb' }}",
+                "{{ $item->alternative->brand_color ?? '#0F3D3A' }}",
             @endforeach
         ];
 

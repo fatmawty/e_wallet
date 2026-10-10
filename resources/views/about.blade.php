@@ -9,7 +9,7 @@
 <div class="space-y-8">
 
     {{-- INTRO CARD --}}
-    <div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-3xl p-8 sm:p-10 shadow-lg relative overflow-hidden">
+    <div class="bg-gradient-to-br from-forest-700 via-forest-800 to-forest-950 text-white rounded-3xl p-8 sm:p-10 shadow-lg relative overflow-hidden">
         <div class="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none"></div>
 
         <div class="relative z-10 max-w-3xl">
@@ -86,9 +86,9 @@
             <ol class="space-y-3 text-sm">
                 @php
                     $steps = [
-                        ['icon' => 'fa-database', 'color' => 'indigo', 'title' => 'Input Data Penilaian', 'desc' => 'Pengguna memasukkan atau menggunakan data penilaian alternatif (skala 1-5) untuk tiap kriteria.'],
-                        ['icon' => 'fa-weight-hanging', 'color' => 'sky', 'title' => 'Ambil Bobot Kriteria', 'desc' => 'Sistem mengambil bobot setiap kriteria (W_j) yang sudah dikonfigurasi dari database.'],
-                        ['icon' => 'fa-table', 'color' => 'violet', 'title' => 'Bentuk Matriks Keputusan', 'desc' => 'Sistem menyusun matriks X (Alternatif × Kriteria) sebagai dasar perhitungan.'],
+                        ['icon' => 'fa-database', 'color' => 'indigo', 'title' => 'Kumpulkan Penilaian Responden', 'desc' => 'Responden memberi skor skala 1-5 pada setiap e-wallet untuk seluruh kriteria.'],
+                        ['icon' => 'fa-weight-hanging', 'color' => 'sky', 'title' => 'Hitung Bobot Kriteria', 'desc' => 'Sistem merata-ratakan jawaban tingkat kepentingan responden lalu menormalisasikannya agar total bobot (W_j) sama dengan 1.'],
+                        ['icon' => 'fa-table', 'color' => 'violet', 'title' => 'Bentuk Matriks Keputusan', 'desc' => 'Sistem menghitung rata-rata skor responden untuk setiap pasangan alternatif dan kriteria.'],
                         ['icon' => 'fa-divide', 'color' => 'teal', 'title' => 'Normalisasi Matriks', 'desc' => 'Setiap nilai dinormalisasi dengan rumus Benefit (X/Max) atau Cost (Min/X).'],
                         ['icon' => 'fa-multiply', 'color' => 'blue', 'title' => 'Hitung Nilai Preferensi', 'desc' => 'Nilai normalisasi dikalikan bobot, kemudian dijumlahkan untuk mendapat V_i tiap alternatif.'],
                         ['icon' => 'fa-sort', 'color' => 'emerald', 'title' => 'Perangkingan Otomatis', 'desc' => 'Sistem mengurutkan semua alternatif dari nilai V_i tertinggi ke terendah.'],
@@ -163,7 +163,13 @@
                             <span class="font-mono font-extrabold text-indigo-600 text-xs w-8 shrink-0">{{ $crit->code }}</span>
                             <div>
                                 <span class="font-bold text-slate-900 block text-sm">{{ $crit->name }}</span>
-                                <span class="text-xs text-slate-500">Bobot: {{ number_format($crit->weight * 100, 0) }}%</span>
+                                <span class="text-xs text-slate-500">
+                                    @if($hasDynamicWeights)
+                                        Bobot: {{ number_format($crit->weight * 100, 2) }}%
+                                    @else
+                                        Bobot dihitung setelah ada jawaban responden
+                                    @endif
+                                </span>
                             </div>
                         </div>
                         @if(strtolower($crit->type) === 'benefit')

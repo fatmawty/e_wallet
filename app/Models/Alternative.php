@@ -18,11 +18,6 @@ class Alternative extends Model
         'status',
     ];
 
-    public function scores()
-    {
-        return $this->hasMany(AlternativeScore::class, 'alternative_id');
-    }
-
     public function calculationResult()
     {
         return $this->hasOne(CalculationResult::class, 'alternative_id');

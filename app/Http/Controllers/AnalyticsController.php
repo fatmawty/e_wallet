@@ -92,18 +92,6 @@ class AnalyticsController extends Controller
             ->orderByDesc('count')
             ->get();
 
-        // 4. Primary E-Wallet Usage Breakdown
-        $usageBreakdown = [];
-        foreach ($wallets as $wallet) {
-            $count = Respondent::where('primary_e_wallet_id', $wallet->id)->count();
-            $pct = $totalRespondents > 0 ? round(($count / $totalRespondents) * 100, 1) : 0;
-            $usageBreakdown[] = [
-                'wallet' => $wallet,
-                'count' => $count,
-                'pct' => $pct,
-            ];
-        }
-
         return view('analytics.index', [
             'wallets' => $wallets,
             'criteria' => $criteria,
@@ -112,7 +100,6 @@ class AnalyticsController extends Controller
             'radarData' => $radarData,
             'bestByCriterion' => $bestByCriterion,
             'institutionBreakdown' => $institutionBreakdown,
-            'usageBreakdown' => $usageBreakdown,
         ]);
     }
 }

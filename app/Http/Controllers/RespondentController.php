@@ -10,8 +10,7 @@ class RespondentController extends Controller
     public function index(): View
     {
         return view('respondents.index', [
-            'respondents' => Respondent::with('primaryEWallet')
-                ->latest()
+            'respondents' => Respondent::latest()
                 ->paginate(20),
         ]);
     }

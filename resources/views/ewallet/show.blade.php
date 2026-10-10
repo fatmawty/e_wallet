@@ -31,18 +31,12 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <div class="text-center px-4 border-r border-slate-200">
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <div class="text-center px-4">
                         <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Skor Likert</span>
                         <div class="font-heading font-extrabold text-3xl text-slate-900">
                             {{ number_format($avgScore, 2) }}
                             <span class="text-xs font-medium text-slate-400">/ 5.0</span>
-                        </div>
-                    </div>
-                    <div class="text-center px-4">
-                        <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Pengguna Utama</span>
-                        <div class="font-heading font-extrabold text-3xl text-slate-900">
-                            {{ $usagePct }}%
                         </div>
                     </div>
                 </div>
@@ -114,37 +108,6 @@
                     </a>
                 </div>
             </div>
-        </div>
-
-        <!-- Student Reviews -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
-            <h2 class="font-heading font-bold text-xl text-slate-900 mb-6 flex items-center gap-2">
-                <i class="fa-solid fa-comments text-indigo-600"></i>
-                <span>Ulasan & Masukan Mahasiswa</span>
-            </h2>
-
-            @if($feedbacks->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @foreach($feedbacks as $fb)
-                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                            <div class="flex items-center gap-3 mb-2">
-                                <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">
-                                    {{ substr($fb->name, 0, 1) }}
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-sm text-slate-900">{{ $fb->name }}</h4>
-                                    <p class="text-[11px] text-slate-500">{{ $fb->institution }} @if($fb->major) &bull; {{ $fb->major }} @endif</p>
-                                </div>
-                            </div>
-                            <p class="text-xs text-slate-600 italic leading-relaxed">
-                                "{{ $fb->general_feedback }}"
-                            </p>
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <p class="text-slate-500 text-sm italic">Belum ada ulasan tertulis untuk {{ $wallet->name }}. Jadilah yang pertama memberikan ulasan!</p>
-            @endif
         </div>
     </div>
 </div>

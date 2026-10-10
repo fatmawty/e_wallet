@@ -7,11 +7,11 @@
 @section('content')
 
     <!-- Weight Status Card Banner -->
-    <div class="card-custom p-4 mb-4" style="background: linear-gradient(135deg, #ffffff, {{ $isWeightValid ? '#f0fdf4' : '#fffbe6' }}); border-color: {{ $isWeightValid ? '#bbf7d0' : '#fef08a' }};">
+    <div class="card-custom p-4 mb-4" style="background: linear-gradient(135deg, #ffffff, {{ $isWeightValid ? '#EAF2F0' : '#FFF8E8' }}); border-color: {{ $isWeightValid ? '#A6C7C1' : '#F8D998' }};">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
             <div class="d-flex align-items-center gap-3">
                 <div class="rounded-circle d-flex align-items-center justify-content-center text-white"
-                     style="width: 48px; height: 48px; background-color: {{ $isWeightValid ? '#10b981' : '#f59e0b' }}; font-size: 1.3rem;">
+                     style="width: 48px; height: 48px; background-color: {{ $isWeightValid ? '#0F3D3A' : '#F4B13B' }}; color: {{ $isWeightValid ? '#ffffff' : '#0F3D3A' }}; font-size: 1.3rem;">
                     <i class="bi {{ $isWeightValid ? 'bi-check-lg' : 'bi-exclamation-triangle' }}"></i>
                 </div>
                 <div>
@@ -121,11 +121,6 @@
                                                 </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label fw-semibold">Bobot Kriteria (0.00 - 1.00)</label>
-                                                <input type="number" step="0.01" name="weight" class="form-control rounded-3" value="{{ old('weight', $item->weight) }}" min="0" max="1" required>
-                                                <small class="text-muted">Contoh: 0.20 untuk 20%</small>
-                                            </div>
-                                            <div class="mb-3">
                                                 <label class="form-label fw-semibold">Deskripsi</label>
                                                 <textarea name="description" class="form-control rounded-3" rows="2">{{ old('description', $item->description) }}</textarea>
                                             </div>
@@ -215,11 +210,6 @@
                                 <option value="benefit" selected>Benefit (Semakin besar semakin baik)</option>
                                 <option value="cost">Cost (Semakin kecil semakin baik)</option>
                             </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Bobot Kriteria (0.00 - 1.00)</label>
-                            <input type="number" step="0.01" name="weight" class="form-control rounded-3" placeholder="Contoh: 0.15" value="{{ old('weight') }}" min="0" max="1" required>
-                            <small class="text-muted">Masukkan nilai desimal antara 0 sampai 1.</small>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Deskripsi</label>

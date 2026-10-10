@@ -65,13 +65,13 @@
                 <div class="rounded-3 bg-info-subtle text-info p-3 d-inline-block mb-3" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
                     <i class="bi bi-sliders fs-4"></i>
                 </div>
-                <h5 class="fw-bold text-dark mb-2">5 Kriteria Penilaian</h5>
+                <h5 class="fw-bold text-dark mb-2">7 Kriteria Penilaian</h5>
                 <ul class="text-muted small mb-0 ps-3">
                     <li><strong>C1:</strong> Keamanan (Benefit)</li>
                     <li><strong>C2:</strong> Kemudahan Penggunaan (Benefit)</li>
-                    <li><strong>C3:</strong> Keamanan (Benefit)</li>
-                    <li><strong>C4:</strong> Biaya Transaksi (Cost)</li>
-                    <li><strong>C5:</strong> Fitur (Benefit)</li>
+                    <li><strong>C3:</strong> Promo dan Cashback (Benefit)</li>
+                    <li><strong>C4:</strong> Keterjangkauan Biaya Transaksi (Benefit)</li>
+                    <li><strong>C5:</strong> Kelengkapan Fitur (Benefit)</li>
                     <li><strong>C6:</strong> Top Up (Benefit)</li>
                     <li><strong>C7:</strong> Merchant (Benefit)</li>
                 </ul>
@@ -86,8 +86,8 @@
         <div class="row g-3">
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="p-3 border rounded-3 h-100 bg-light-subtle">
-                    <div class="fw-bold text-primary mb-1">1. Input / Update Data Penilaian</div>
-                    <p class="text-muted small mb-0">Pengguna memasukkan atau menggunakan data penilaian skala Likert 1–5 untuk tiap alternatif pada setiap kriteria.</p>
+                    <div class="fw-bold text-primary mb-1">1. Responden Mengisi Kuesioner</div>
+                    <p class="text-muted small mb-0">Responden memberi nilai skala Likert 1–5 untuk setiap e-wallet pada setiap kriteria.</p>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4">
@@ -99,7 +99,7 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="p-3 border rounded-3 h-100 bg-light-subtle">
                     <div class="fw-bold text-primary mb-1">3. Matriks Keputusan ($X$)</div>
-                    <p class="text-muted small mb-0">Sistem membentuk matriks keputusan $X_{ij}$ yang merepresentasikan nilai asli dari seluruh alternatif.</p>
+                    <p class="text-muted small mb-0">Sistem membentuk matriks keputusan $X_{ij}$ dari rata-rata jawaban responden setiap alternatif dan kriteria.</p>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4">

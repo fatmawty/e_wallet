@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Respondent extends Model
@@ -16,17 +15,23 @@ class Respondent extends Model
         'status',
         'institution',
         'major',
-        'primary_e_wallet_id',
+        'cohort_year',
         'general_feedback',
+        'consented_at',
     ];
 
-    public function primaryEWallet(): BelongsTo
-    {
-        return $this->belongsTo(EWallet::class, 'primary_e_wallet_id');
-    }
+    protected $casts = [
+        'cohort_year' => 'integer',
+        'consented_at' => 'datetime',
+    ];
 
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class, 'respondent_id');
+    }
+
+    public function criterionImportanceRatings(): HasMany
+    {
+        return $this->hasMany(CriterionImportanceRating::class, 'respondent_id');
     }
 }
