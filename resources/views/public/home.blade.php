@@ -27,7 +27,7 @@
                     Penelitian mahasiswa &bull; SPK metode SAW
                 </span>
                 <h1 class="mt-7 max-w-3xl font-heading text-5xl font-extrabold leading-[.98] tracking-tight text-forest-700 sm:text-6xl lg:text-7xl">
-                    Cara mahasiswa memilih <span class="text-clay-500">e-wallet</span>, diteliti.
+                    E-Wallet Terbaik Menurut <span class="text-clay-500">Penilaian Mahasiswa</span>
                 </h1>
                 <p class="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
                     Bantu penelitian ini dengan memberi tingkat kepentingan pada kriteria dan menilai empat alternatif e-wallet. Bobot serta peringkat dihitung dari jawaban responden—bukan penilaian admin.
