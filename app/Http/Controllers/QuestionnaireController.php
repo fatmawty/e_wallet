@@ -44,7 +44,6 @@ class QuestionnaireController extends Controller
         // Validation rules
         $rules = [
             'name' => 'required|string|max:255',
-            'student_confirmation' => 'accepted',
             'research_consent' => 'accepted',
             'institution' => 'required|string|max:255',
             'major' => 'required|string|max:255',
@@ -66,7 +65,6 @@ class QuestionnaireController extends Controller
 
         $validated = $request->validate($rules, [
             'name.required' => 'Nama responden wajib diisi.',
-            'student_confirmation.accepted' => 'Konfirmasi bahwa Anda mahasiswa aktif wajib disetujui.',
             'research_consent.accepted' => 'Persetujuan partisipasi penelitian wajib disetujui untuk mengirim jawaban.',
             'institution.required' => 'Nama Perguruan Tinggi / Instansi wajib diisi.',
             'major.required' => 'Program studi wajib diisi.',

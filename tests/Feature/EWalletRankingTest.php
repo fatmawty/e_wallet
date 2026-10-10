@@ -46,11 +46,15 @@ class EWalletRankingTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Kuesioner Evaluasi E-Wallet');
         $response->assertSee('Tingkat Kepentingan Kriteria');
+        $response->assertSee('Kelengkapan kuesioner');
+        $response->assertSee('Persetujuan penelitian wajib; ulasan tambahan opsional dan tidak dihitung.');
+        $response->assertSee('aria-label="Kelengkapan kuesioner"', false);
         $response->assertSee('Angkatan');
         $response->assertSee('Program Studi');
         $response->assertSee('mahasiswa aktif');
         $response->assertSee('Nama Responden');
         $response->assertSee('Nama tidak ditampilkan pada website publik');
+        $response->assertDontSee('name="student_confirmation"');
         $response->assertDontSee('Anda dapat berhenti sebelum mengirim kuesioner');
         $response->assertDontSee('primary_e_wallet_id');
         $response->assertDontSee('E-Wallet Utama Yang Paling Sering Anda Gunakan');
@@ -95,7 +99,6 @@ class EWalletRankingTest extends TestCase
 
         $postData = [
             'name' => 'Budi Penguji',
-            'student_confirmation' => '1',
             'research_consent' => '1',
             'institution' => 'Universitas Indonesia',
             'major' => 'Sistem Informasi',
@@ -272,7 +275,6 @@ class EWalletRankingTest extends TestCase
 
         $this->post('/kuesioner', [
             'name' => 'Mahasiswa Uji',
-            'student_confirmation' => '1',
             'research_consent' => '1',
             'institution' => 'Kampus',
             'major' => 'Informatika',
@@ -285,10 +287,11 @@ class EWalletRankingTest extends TestCase
         $this->assertDatabaseCount('criterion_importance_ratings', 0);
     }
 
-    public function test_questionnaire_requires_active_student_and_research_consent(): void
+    public function test_questionnaire_requires_research_consent(): void
     {
         $this->post('/kuesioner', [])
-            ->assertSessionHasErrors(['name', 'student_confirmation', 'research_consent', 'institution', 'major', 'cohort_year']);
+            ->assertSessionHasErrors(['name', 'research_consent', 'institution', 'major', 'cohort_year'])
+            ->assertSessionDoesntHaveErrors(['student_confirmation']);
 
         $this->assertDatabaseCount('respondents', 0);
     }

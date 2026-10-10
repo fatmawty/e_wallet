@@ -74,13 +74,14 @@
         <form action="{{ route('kuesioner.store') }}" method="POST" id="form-kuesioner" class="space-y-8">
             @csrf
 
-            <div class="sticky top-20 z-20 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-sm backdrop-blur" aria-live="polite">
-                <div class="mb-2 flex items-center justify-between gap-3 text-xs font-bold text-slate-600">
-                    <span>Progress pengisian</span>
+            <div class="sticky top-20 z-20 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-sm backdrop-blur">
+                <div class="mb-1 flex items-center justify-between gap-3 text-xs font-bold text-slate-600">
+                    <span>Kelengkapan kuesioner</span>
                     <span id="questionnaire-progress-label">0% selesai</span>
                 </div>
-                <div class="h-2 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="questionnaire-progressbar">
-                    <div id="questionnaire-progress" class="relative h-full w-0 overflow-hidden rounded-full bg-linear-to-r from-indigo-600 via-cyan-500 to-emerald-500 transition-all duration-500 ease-out after:absolute after:inset-0 after:-translate-x-full after:bg-white/30 after:content-[''] after:animate-pulse"></div>
+                <p class="mb-3 text-xs leading-relaxed text-slate-500">Isi data responden, tingkat kepentingan, dan penilaian semua e-wallet. Persetujuan penelitian wajib; ulasan tambahan opsional dan tidak dihitung.</p>
+                <div class="h-2 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-label="Kelengkapan kuesioner" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="questionnaire-progressbar">
+                    <div id="questionnaire-progress" class="h-full w-0 rounded-full bg-rose-500 transition-[width,background-color] duration-500 ease-out"></div>
                 </div>
             </div>
 
@@ -108,10 +109,6 @@
 
                 </div>
                 <div class="space-y-3 border-t border-slate-100 pt-5">
-                    <label class="flex items-start gap-3 text-sm text-slate-700">
-                        <input type="checkbox" name="student_confirmation" value="1" required {{ old('student_confirmation') ? 'checked' : '' }} class="mt-1 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-                        <span>Saya menyatakan bahwa saya mahasiswa aktif. <span class="text-rose-500">*</span></span>
-                    </label>
                     <div class="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-relaxed text-sky-950">
                         <strong>Informasi penelitian dan privasi:</strong> Partisipasi bersifat sukarela. Nama dan jawaban digunakan peneliti untuk pengelolaan serta analisis penelitian pemilihan e-wallet. Nama tidak ditampilkan pada website publik dan harus dihapus/diganti kode sebelum hasil penelitian dibagikan; hasil dilaporkan secara agregat. Peneliti/admin dapat melihat data mentah. Ulasan opsional dapat ditampilkan secara anonim di website. Hindari menuliskan data pribadi di kolom ulasan.
                     </div>
@@ -300,10 +297,19 @@
             const total = requiredRadioNames.length + requiredFields.length + requiredCheckboxes.length;
             const completed = answeredRadios + completedFields + completedCheckboxes;
             const percentage = total ? Math.round((completed / total) * 100) : 0;
+            const colorClass = percentage === 100
+                ? 'bg-emerald-500'
+                : percentage >= 67
+                    ? 'bg-sky-500'
+                    : percentage >= 34
+                        ? 'bg-amber-500'
+                        : 'bg-rose-500';
 
             progress.style.width = `${percentage}%`;
+            progress.classList.remove('bg-rose-500', 'bg-amber-500', 'bg-sky-500', 'bg-emerald-500');
+            progress.classList.add(colorClass);
             progressBar.setAttribute('aria-valuenow', percentage);
-            progressLabel.textContent = `${percentage}% selesai`;
+            progressLabel.textContent = `${completed} dari ${total} isian wajib selesai · ${percentage}%`;
         }
 
         form.addEventListener('input', updateProgress);
