@@ -33,7 +33,7 @@ class EWalletRankingTest extends TestCase
         $response->assertSee('ShopeePay');
         $response->assertSee('OVO');
         $response->assertSee('DANA');
-        $response->assertSee('Cara mahasiswa memilih');
+        $response->assertSee('E-Wallet Terbaik Menurut');
         $response->assertSee('Respons masuk');
         $response->assertSee('Target rencana');
         $response->assertSee('Metode SAW');
@@ -317,7 +317,8 @@ class EWalletRankingTest extends TestCase
 
     public function test_analytics_page_loads_successfully(): void
     {
-        $response = $this->get('/analisis');
+        $admin = User::where('email', 'admin@ewallet.test')->first();
+        $response = $this->actingAs($admin)->get('/analisis');
         $response->assertStatus(200);
         $response->assertSee('Matriks Analisis Komparatif');
     }

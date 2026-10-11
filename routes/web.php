@@ -30,6 +30,7 @@ Route::get('/beranda', [PublicController::class, 'home'])->name('public.home');
 Route::get('/kuesioner', [QuestionnaireController::class, 'create'])->name('kuesioner.create');
 Route::post('/kuesioner', [QuestionnaireController::class, 'store'])->name('kuesioner.store');
 Route::get('/ranking', [PublicController::class, 'result'])->name('ranking.index');
+Route::get('/ewallet/{slug}', [EWalletController::class, 'show'])->name('ewallet.show');
 
 // Admin-only SPK management and analysis pages
 Route::middleware(['auth', 'role:admin'])->group(function () {
