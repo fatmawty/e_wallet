@@ -141,6 +141,42 @@ class EWalletRankingTest extends TestCase
             ->assertSee('Rata-rata penilaian 1 responden lengkap');
     }
 
+    public function test_admin_can_view_a_respondents_questionnaire_answers(): void
+    {
+        $respondent = Respondent::create([
+            'name' => 'Ricardo Penguji',
+            'status' => 'Mahasiswa Aktif',
+            'institution' => 'Universitas Pengujian',
+            'major' => 'Sistem Informasi',
+            'cohort_year' => now()->year - 2,
+        ]);
+        $criterion = Criterion::where('code', 'C1')->firstOrFail();
+        $wallet = EWallet::where('name', 'DANA')->firstOrFail();
+
+        CriterionImportanceRating::create([
+            'respondent_id' => $respondent->id,
+            'criterion_id' => $criterion->id,
+            'score' => 4,
+        ]);
+        Rating::create([
+            'respondent_id' => $respondent->id,
+            'e_wallet_id' => $wallet->id,
+            'criterion_id' => $criterion->id,
+            'score' => 5,
+        ]);
+
+        $this->actingAs(User::where('role', 'admin')->firstOrFail())
+            ->get(route('respondents.show', $respondent))
+            ->assertOk()
+            ->assertSee('Ricardo Penguji')
+            ->assertSee('Tingkat Kepentingan Kriteria')
+            ->assertSee('Penilaian E-Wallet')
+            ->assertSee('Keamanan')
+            ->assertSee('DANA')
+            ->assertSee('4')
+            ->assertSee('5');
+    }
+
     public function test_saw_uses_average_respondent_ratings_for_the_decision_matrix(): void
     {
         $criteria = Criterion::orderBy('code')->get();
@@ -329,5 +365,13 @@ class EWalletRankingTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('GoPay');
         $response->assertSee('Breakdown Penilaian Per Kriteria');
+    }
+
+    public function test_admin_can_export_respondents_data_csv(): void
+    {
+        $admin = User::where('email', 'admin@ewallet.test')->first();
+        $response = $this->actingAs($admin)->get('/responden/export-validitas');
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
     }
 }

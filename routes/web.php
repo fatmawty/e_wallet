@@ -38,6 +38,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 	// Data Responden
 	Route::get('/responden', [RespondentController::class, 'index'])->name('respondents.index');
+	Route::get('/responden/export-validitas', [RespondentController::class, 'exportCsv'])->name('respondents.export');
+	Route::get('/responden/{respondent}', [RespondentController::class, 'show'])->name('respondents.show');
 
 	// Kriteria CRUD & Bobot
 	Route::get('/kriteria', [CriterionController::class, 'index'])->name('criteria.index');
