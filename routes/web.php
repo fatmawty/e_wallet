@@ -39,6 +39,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 	// Data Responden
 	Route::get('/responden', [RespondentController::class, 'index'])->name('respondents.index');
 	Route::get('/responden/export-validitas', [RespondentController::class, 'exportCsv'])->name('respondents.export');
+	Route::get('/responden/{respondent}/edit', [RespondentController::class, 'edit'])->name('respondents.edit');
+	Route::put('/responden/{respondent}', [RespondentController::class, 'update'])->name('respondents.update');
+	Route::delete('/responden/{respondent}', [RespondentController::class, 'destroy'])->name('respondents.destroy');
 	Route::get('/responden/{respondent}', [RespondentController::class, 'show'])->name('respondents.show');
 
 	// Kriteria CRUD & Bobot

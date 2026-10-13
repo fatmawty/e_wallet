@@ -19,10 +19,27 @@
                 · {{ $respondent->created_at?->format('d/m/Y H:i') }}
             </p>
         </div>
-        <a href="{{ route('respondents.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-            <i class="fa-solid fa-arrow-left"></i>
-            Kembali ke responden
-        </a>
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{{ route('respondents.edit', $respondent) }}"
+               class="inline-flex items-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all">
+                <i class="fa-solid fa-pen"></i>
+                Edit Profil
+            </a>
+            <form action="{{ route('respondents.destroy', $respondent) }}" method="POST"
+                  onsubmit="return confirm('Yakin ingin menghapus data responden {{ addslashes($respondent->name) }}?\n\nSELURUH jawaban kuesioner responden ini juga akan dihapus dan ranking SAW akan diperbarui.\nTindakan ini tidak dapat dibatalkan!')">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                        class="inline-flex items-center gap-2 rounded-xl bg-red-500 hover:bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all">
+                    <i class="fa-solid fa-trash"></i>
+                    Hapus
+                </button>
+            </form>
+            <a href="{{ route('respondents.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                <i class="fa-solid fa-arrow-left"></i>
+                Kembali ke responden
+            </a>
+        </div>
     </div>
 
     <section class="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm">

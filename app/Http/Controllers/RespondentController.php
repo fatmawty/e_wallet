@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Criterion;
 use App\Models\EWallet;
 use App\Models\Respondent;
+use App\Services\SawCalculatorService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -31,6 +35,51 @@ class RespondentController extends Controller
             'criteria' => Criterion::orderBy('code')->get(),
             'wallets' => EWallet::orderBy('name')->get(),
         ]);
+    }
+
+    public function edit(Respondent $respondent): View
+    {
+        return view('respondents.edit', [
+            'respondent' => $respondent,
+        ]);
+    }
+
+    public function update(Request $request, Respondent $respondent): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'institution' => 'required|string|max:255',
+            'major' => 'required|string|max:255',
+            'cohort_year' => 'required|integer|min:2000|max:' . now()->year,
+            'general_feedback' => 'nullable|string|max:1000',
+        ], [
+            'name.required' => 'Nama responden wajib diisi.',
+            'institution.required' => 'Nama Universitas / Institusi wajib diisi.',
+            'major.required' => 'Program studi wajib diisi.',
+            'cohort_year.required' => 'Tahun angkatan wajib diisi.',
+        ]);
+
+        $respondent->update($validated);
+
+        return redirect()->route('respondents.index')
+            ->with('success', "Data profil responden {$respondent->name} berhasil diperbarui.");
+    }
+
+    public function destroy(Respondent $respondent, SawCalculatorService $sawService): RedirectResponse
+    {
+        $name = $respondent->name;
+
+        DB::transaction(function () use ($respondent) {
+            $respondent->ratings()->delete();
+            $respondent->criterionImportanceRatings()->delete();
+            $respondent->delete();
+        });
+
+        // Recalculate SAW ranking without this respondent
+        $sawService->calculate();
+
+        return redirect()->route('respondents.index')
+            ->with('success', "Data responden {$name} beserta seluruh jawabannya berhasil dihapus. Ranking SAW telah diperbarui.");
     }
 
     /**

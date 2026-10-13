@@ -34,6 +34,7 @@
                         <th class="py-4 px-4 text-center">Angkatan</th>
                         <th class="py-4 px-4">Tanggal</th>
                         <th class="py-4 px-6 text-center">Rincian Jawaban</th>
+                        <th class="py-4 px-6 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 text-sm">
@@ -56,10 +57,31 @@
                                     <span>Lihat Jawaban</span>
                                 </a>
                             </td>
+                            <td class="py-4 px-6 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    {{-- Tombol Edit --}}
+                                    <a href="{{ route('respondents.edit', $respondent) }}"
+                                       class="inline-flex items-center gap-1.5 rounded-xl bg-amber-50 border border-amber-100 px-3.5 py-2 text-xs font-bold text-amber-700 hover:bg-amber-100 transition-all">
+                                        <i class="fa-solid fa-pen text-xs"></i>
+                                        <span>Edit</span>
+                                    </a>
+                                    {{-- Tombol Hapus --}}
+                                    <form action="{{ route('respondents.destroy', $respondent) }}" method="POST"
+                                          onsubmit="return confirm('Yakin ingin menghapus data responden {{ addslashes($respondent->name) }}?\n\nSELURUH jawaban kuesioner responden ini juga akan dihapus dan ranking SAW akan diperbarui.\nTindakan ini tidak dapat dibatalkan!')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="inline-flex items-center gap-1.5 rounded-xl bg-red-50 border border-red-100 px-3.5 py-2 text-xs font-bold text-red-700 hover:bg-red-100 transition-all">
+                                            <i class="fa-solid fa-trash text-xs"></i>
+                                            <span>Hapus</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="py-12 text-center text-slate-400">
+                            <td colspan="8" class="py-12 text-center text-slate-400">
                                 <i class="fa-solid fa-inbox text-3xl mb-2 block"></i>
                                 Belum ada data responden yang masuk.
                             </td>
